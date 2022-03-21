@@ -24,7 +24,6 @@
 
 #include "TextImage.h"
 
-
 g80::TextImage::TextImage() {
 
 }

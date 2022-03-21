@@ -31,7 +31,6 @@ auto snake::FieldStateMgr::is_ix_used(const Dim &ix) const -> bool {
     return mapper_[ix] >= div_;
 }
 
-
 auto snake::FieldStateMgr::NOT_FREE_POINT() const -> Point {
     return get_point(NOT_FREE_IX());
 }

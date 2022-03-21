@@ -23,7 +23,7 @@ auto delay_until_next_frame(const TimePointSysClock &start) -> void;
 auto main(int argc, char **argv) -> int {
 
     const Area area(130, 40);
-
+    
     FieldStateMgr fsm(area);
     VectorPoint snake_head({{
         static_cast<Dim>(area.w / 2),
