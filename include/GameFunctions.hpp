@@ -13,6 +13,7 @@ namespace snake {
 
     constexpr int FPS = 15;
     constexpr int MSPF = 1000 / FPS;
+    constexpr char KEY_ESCAPE = 27;
     
     namespace chr = std::chrono;
     using TimePointSysClock = chr::time_point<chr::system_clock>;

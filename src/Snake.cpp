@@ -4,7 +4,6 @@ snake::Snake::Snake(const VectorPoint &head, const Dim body_to_egg_ratio) :
     head_(head),
     body_to_egg_ratio_(body_to_egg_ratio),
     max_body_length_(body_to_egg_ratio_) {
-
 }
 
 auto snake::Snake::move_head() -> void {
@@ -34,14 +33,10 @@ auto snake::Snake::increase_length_if_head_hits_egg(const Point &egg) -> void {
 }
 
 auto snake::Snake::add_new_head_to_body() -> void {
-    // Optimize by not using a deque but by 
-    // implementing a vector of circular list
     body_.push_front(head_.point);
 }
 
 auto snake::Snake::remove_tail_from_body() -> void {
-    // Optimize by not using a stack but by 
-    // implementing a vector of circular list
     if (body_.size() > max_body_length_)
         body_.pop_back();
 }

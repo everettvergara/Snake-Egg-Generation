@@ -21,6 +21,12 @@
 #ifndef _SNAKE_H_
 #define _SNAKE_H_
 
+// Optimize Snake Body by implementing a  
+// circular list thru vector instead of deque.
+// But since this is a demo of Snake Egg 
+// Optimization, I'll leave the optimization to the 
+// viewer.
+
 #include <deque>
 
 #include "Dim.hpp"

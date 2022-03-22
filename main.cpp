@@ -2,7 +2,7 @@
 
 using namespace g80;
 using namespace snake;
-    
+
 auto main(int argc, char **argv) -> int {
 
     const Area area(130, 40);
@@ -22,18 +22,21 @@ auto main(int argc, char **argv) -> int {
         
         if (is_key_pressed()) {
             char key = getchar();
-            if (key == 27) {
+            if (key == KEY_ESCAPE) {
                 is_gameover = false;
             } else if (key == ' ') {
                 is_auto = !is_auto;
-             } else if (!is_auto) {
+            } else if (!is_auto) {
                 if (key == 'd') snake.move_right();
                 else if (key == 'a') snake.move_left();
                 else if (key == 'w') snake.move_up();
                 else if (key == 's') snake.move_down();
-             }
+            }
         }
         
+        // The interested viewer should look at this function
+        // get_next_egg_point();
+
         if (!fsm.has_egg())
             if (!fsm.get_next_egg_point().has_value())
                 break;
