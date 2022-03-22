@@ -20,7 +20,7 @@ namespace snake {
     using TimePointSysClock = chr::time_point<chr::system_clock>;
     using SysClock = chr::system_clock;
 
-    enum DIRECTION {UP, DOWN, LEFT, RIGHT, ORIGIN};
+    enum DIRECTION {UP, DOWN, LEFT, RIGHT, ORIGIN, NA};
     struct Path {Point p; Dim n; DIRECTION d;};
     using PathFinder = std::stack<Path>;
     using FoundPath = std::stack<DIRECTION>;
@@ -37,7 +37,7 @@ namespace snake {
         Arena arena[fsm.height()][fsm.width()];
         for (Dim i = 0; i < fsm.height(); ++i) {
             for (Dim j = 0; j < fsm.width(); ++j) {
-                StateType state_type = fsm.get_state_type_point({i, j});
+                StateType state_type = fsm.get_state_type_point({j, i});
                 
                 if (state_type == EGG)
                     arena[i][j].state_type_id = -2;
@@ -45,6 +45,9 @@ namespace snake {
                     arena[i][j].state_type_id = -3;
                 else
                     arena[i][j].state_type_id = -1;
+                
+                arena[i][j].d = NA;
+
             }
         }
 
@@ -65,34 +68,64 @@ namespace snake {
             }
 
             if (path.p.x - 1 >= 0 && arena[path.p.y][path.p.x - 1].state_type_id < -1) {
-                arena[path.p.y][path.p.x - 1].state_type_id = path.n + 1;
+                
+                if (arena[path.p.y][path.p.x - 1].state_type_id == -3)
+                    arena[path.p.y][path.p.x - 1].state_type_id = path.n + 1;
                 arena[path.p.y][path.p.x - 1].d = LEFT;
-                path_finder.push({{path.p.y, static_cast<Dim>(path.p.x - 1)}, static_cast<Dim>(path.n + 1)});
+                path_finder.push({{static_cast<Dim>(path.p.x - 1), path.p.y}, static_cast<Dim>(path.n + 1)});
             }
 
             if (path.p.x + 1 < fsm.width() && arena[path.p.y][path.p.x + 1].state_type_id < -1) {
-                arena[path.p.y][path.p.x + 1].state_type_id = path.n + 1;
+                if (arena[path.p.y][path.p.x + 1].state_type_id == -3)
+                    arena[path.p.y][path.p.x + 1].state_type_id = path.n + 1;
                 arena[path.p.y][path.p.x + 1].d = RIGHT;
-                path_finder.push({{path.p.y, static_cast<Dim>(path.p.x + 1)}, static_cast<Dim>(path.n + 1)});
+                path_finder.push({{static_cast<Dim>(path.p.x + 1), path.p.y}, static_cast<Dim>(path.n + 1)});
             }
 
             if (path.p.y - 1 >= 0 && arena[path.p.y - 1][path.p.x].state_type_id < -1) {
-                arena[path.p.y - 1][path.p.x].state_type_id = path.n + 1;
+                if (arena[path.p.y - 1][path.p.x].state_type_id == -3)
+                    arena[path.p.y - 1][path.p.x].state_type_id = path.n + 1;
                 arena[path.p.y - 1][path.p.x].d = UP;
-                path_finder.push({{static_cast<Dim>(path.p.y - 1), path.p.x}, static_cast<Dim>(path.n + 1)});
+                path_finder.push({{path.p.x, static_cast<Dim>(path.p.y - 1)}, static_cast<Dim>(path.n + 1)});
             }
 
             if (path.p.y + 1 < fsm.height() && arena[path.p.y + 1][path.p.x].state_type_id < -1) {
-                arena[path.p.y + 1][path.p.x].state_type_id = path.n + 1;
+                if (arena[path.p.y + 1][path.p.x].state_type_id == -3)
+                    arena[path.p.y + 1][path.p.x].state_type_id = path.n + 1;
                 arena[path.p.y + 1][path.p.x].d = DOWN;
-                path_finder.push({{static_cast<Dim>(path.p.y + 1), path.p.x}, static_cast<Dim>(path.n + 1)});
+                path_finder.push({{path.p.x, static_cast<Dim>(path.p.y + 1)}, static_cast<Dim>(path.n + 1)});
             }
+
 
         } while (!path_finder.empty());
 
+        for (Dim i = 0; i < fsm.height(); ++i) {
+            for (Dim j = 0; j < fsm.width(); ++j) {
+                std::cout << std::setw(4) << (int)arena[i][j].state_type_id;
+            }
+            std::cout << "\n";
+        }
+        
+        std::cout << "\n\n";
+        for (Dim i = 0; i < fsm.height(); ++i) {
+            for (Dim j = 0; j < fsm.width(); ++j) {
+                switch(arena[i][j].d) {
+                    case UP: std::cout << std::setw(4) << "up"; break;
+                    case DOWN: std::cout << std::setw(4) << "dn"; break;
+                    case LEFT: std::cout << std::setw(4) << "lf"; break;
+                    case RIGHT: std::cout << std::setw(4) << "rt"; break;
+                    default: std::cout << std::setw(4) << "-"; break;
+                }
+                
+            }
+            std::cout << "\n";
+        }
+        
         if (egg.x >= 0) {
             while (arena[egg.y][egg.x].d != ORIGIN) {
-                
+                if (arena[egg.y][egg.x].d != EGG)
+                    fsm.set_point_trail(egg);
+                    
                 found_path.push(arena[egg.y][egg.x].d);
                 switch(arena[egg.y][egg.x].d) {
                     case UP:
@@ -102,10 +135,12 @@ namespace snake {
                         --egg.y;
                         break;
                     case LEFT:
-                        --egg.x;
+                        ++egg.x;
                         break;
                     case RIGHT:
-                        ++egg.x;
+                        --egg.x;
+                        break;
+                    default:
                         break;
                 }
             }
@@ -127,14 +162,14 @@ namespace snake {
 
     auto set_arena(const FieldStateMgr &fsm, const Snake &snake, TextImage &arena, bool is_auto) -> void {
         arena.fill_text(" ");
-        TextImage automatic(" Snake Egg Generation Demo: Automatic Play Mode... Esc to Exit, Spacebar to set to Manual Play!", 3, ON);
-        TextImage manual(" Snake Egg Generation Demo: Manual Mode (Use W,A,S,D) Esc to Exit, Spacebar to set to Automatic Play! ", 3, ON);
+        TextImage automatic(" Automatic ", 3, ON);
+        TextImage manual(" Manual Mode: WASD ", 3, ON);
         TextImage block("#", 7, ON);
         TextImage free(" ", 0, ON);
         TextImage egg("@", 1, ON);
         TextImage trail(".", 7, ON);
         TextImage bug("?", 7, ON);
-
+        
         TextImage snake_stripes[3] = {
             TextImage("$", 2, ON),
             TextImage("$", 4, ON),
@@ -165,9 +200,9 @@ namespace snake {
 
         // Display instructions
         if (is_auto)
-            arena.or_image(automatic, {2, 0});
+            arena.or_image(automatic, {10, 0});
         else 
-            arena.or_image(manual, {2, 0});
+            arena.or_image(manual, {10, 0});
 
         
         int c = 0;

@@ -18,6 +18,7 @@ auto main(int argc, char **argv) -> int {
     bool is_gameover = false;
     bool is_auto = false;
     FoundPath auto_found_path;
+    
     do {
         TimePointSysClock start {SysClock::now()};
         
@@ -27,7 +28,9 @@ auto main(int argc, char **argv) -> int {
                 is_gameover = false;
 
             } else if (key == ' ') {
-                is_auto = !is_auto;
+                if (is_auto == true) is_auto = false;
+                else is_auto = true;
+
                 if (is_auto) {
                     while (!auto_found_path.empty())
                         auto_found_path.pop();
@@ -40,19 +43,21 @@ auto main(int argc, char **argv) -> int {
                 else if (key == 'w') snake.move_up();
                 else if (key == 's') snake.move_down();
             } 
-            
-            if (is_auto) {
+        }
+        
+        if (is_auto) {
+            if (auto_found_path.size() > 0) {
                 DIRECTION d = auto_found_path.top();
+                auto_found_path.pop();
                 if (d == RIGHT) snake.move_right();
                 else if (d == LEFT) snake.move_left();
                 else if (d == UP) snake.move_up();
                 else if (d == DOWN) snake.move_down();
             }
         }
-        
+
         // The interested viewer should look at this function
         // get_next_egg_point();
-
         if (!fsm.has_egg())
             if (!fsm.get_next_egg_point().has_value())
                 break;
