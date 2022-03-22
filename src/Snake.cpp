@@ -11,15 +11,15 @@ auto snake::Snake::move_head() -> void {
     head_.point.y += head_.dir.yn;
 }
 
-auto snake::Snake::get_head() -> Point & {
+auto snake::Snake::get_head() const -> const Point & {
     return head_.point;
 }
 
-auto snake::Snake::get_tail() -> Point & {
+auto snake::Snake::get_tail() const -> const Point & {
     return body_.back();
 }
 
-auto snake::Snake::does_head_hits_egg(const Point &egg) -> bool {
+auto snake::Snake::does_head_hits_egg(const Point &egg) const -> bool {
     return head_.point == egg;
 }
 

@@ -40,9 +40,9 @@ namespace snake {
     public:
         Snake(const VectorPoint &head, const Dim body_to_egg_ratio);
         auto move_head() -> void;
-        auto get_head() -> Point &;
-        auto get_tail() -> Point &;
-        auto does_head_hits_egg(const Point &egg) -> bool;
+        auto get_head() const -> const Point &;
+        auto get_tail() const -> const Point &;
+        auto does_head_hits_egg(const Point &egg) const -> bool;
         auto increase_length() -> void;
         auto increase_length_if_head_hits_egg(const Point &egg) -> void;
         auto add_new_head_to_body() -> void;

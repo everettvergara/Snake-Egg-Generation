@@ -70,11 +70,11 @@ namespace snake {
         auto get_next_egg_ix() -> const DimOp;
 
         // Get state point
-        auto get_state_point(const Point &point) const -> Point;
+        auto get_state_point(const Point &point) const -> Dim;
         auto get_state_ix(const Dim &ix) const -> Dim;
         
         // Get Mapper
-        auto get_mapper_point(const Point &point) const -> Point;
+        auto get_mapper_point(const Point &point) const -> Dim;
         auto get_mapper_ix(const Dim &ix) const -> Dim;
 
         // Get current egg position
@@ -89,7 +89,10 @@ namespace snake {
         // Get State Type
         auto get_state_type_point(const Point &point) const -> const StateType &;
         auto get_state_type_ix(const Dim &ix) const -> const StateType &;
-        
+        auto set_point_trail(const Point &point) -> void;
+        auto set_ix_trail(const Dim &ix) -> void;
+
+
         // Debuggers
         auto debug() -> void;
         auto show() -> void;

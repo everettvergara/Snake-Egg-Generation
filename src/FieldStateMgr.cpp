@@ -107,12 +107,12 @@ auto snake::FieldStateMgr::get_state_ix(const Dim &ix) const -> Dim {
     return state_[ix];
 }
 
-auto snake::FieldStateMgr::get_state_point(const Point &point) const -> Point {
-    return get_point(get_state_ix(get_ix(point)));
+auto snake::FieldStateMgr::get_state_point(const Point &point) const -> Dim {
+    return get_state_ix(get_ix(point));
 }
 
-auto snake::FieldStateMgr::get_mapper_point(const Point &point) const -> Point {
-    return get_point(get_mapper_ix(get_ix(point)));
+auto snake::FieldStateMgr::get_mapper_point(const Point &point) const -> Dim {
+    return get_mapper_ix(get_ix(point));
 }
 
 auto snake::FieldStateMgr::get_mapper_ix(const Dim &ix) const -> Dim {
@@ -176,4 +176,12 @@ auto snake::FieldStateMgr::show() -> void {
         }
         std::cout << "\n";
     }
+}
+
+auto snake::FieldStateMgr::set_point_trail(const Point &point) -> void {
+    set_ix_trail(get_ix(point));
+}
+
+auto snake::FieldStateMgr::set_ix_trail(const Dim &ix) -> void {
+    type_[ix] = TRAIL;
 }
