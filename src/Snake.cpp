@@ -39,29 +39,29 @@ auto snake::Snake::add_new_head_to_body() -> void {
     body_.push_front(head_.point);
 }
 
-auto snake::Snake::remove_tail_from_body() {
+auto snake::Snake::remove_tail_from_body() -> void {
     // Optimize by not using a stack but by 
     // implementing a vector of circular list
     if (body_.size() > max_body_length_)
         body_.pop_back();
 }
 
-auto snake::Snake::move_up() {
+auto snake::Snake::move_up() -> void {
     if (head_.dir.xn != 0)
         head_.dir = {0, -1};
 }
 
-auto snake::Snake::move_down() {
+auto snake::Snake::move_down() -> void{
     if (head_.dir.xn != 0)
         head_.dir = {0, 1};
 }
 
-auto snake::Snake::move_left() {
+auto snake::Snake::move_left() -> void {
     if (head_.dir.yn != 0)
         head_.dir = {-1, 0};
 }
 
-auto snake::Snake::move_right() {
+auto snake::Snake::move_right() -> void {
     if (head_.dir.yn != 0)
         head_.dir = {1, 0};
 }

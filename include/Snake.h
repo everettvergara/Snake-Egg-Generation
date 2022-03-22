@@ -40,20 +40,19 @@ namespace snake {
         auto increase_length() -> void;
         auto increase_length_if_head_hits_egg(const Point &egg) -> void;
         auto add_new_head_to_body() -> void;
-        auto remove_tail_from_body();
+        auto remove_tail_from_body() -> void;
 
-        auto move_up();
-        auto move_down();
-        auto move_left() ;
-        auto move_right();
+        auto move_up() -> void;
+        auto move_down() -> void;
+        auto move_left() -> void;
+        auto move_right() -> void;
 
         auto get_body() const -> const Body &;
-
         auto get_max_body_length() const -> Dim;
 
     private:
-        const Dim body_to_egg_ratio_;
         VectorPoint head_;
+        const Dim body_to_egg_ratio_;
         Body body_;
         Dim max_body_length_; 
     };
