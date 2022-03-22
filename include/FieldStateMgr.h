@@ -45,7 +45,7 @@ namespace snake {
         FieldStateMgr(FieldStateMgr &&) = delete;
         auto operator=(const FieldStateMgr &) -> FieldStateMgr & = delete;
         auto operator=(FieldStateMgr &&) -> FieldStateMgr & = delete;
-        virtual ~FieldStateMgr();
+        virtual ~FieldStateMgr() = default;
 
         // Helper to convert Points to Ix and vice-versa
         auto get_ix(const Point &point) const -> Dim;

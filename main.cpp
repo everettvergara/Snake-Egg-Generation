@@ -1,22 +1,20 @@
-#include "Demo.hpp"
+#include "GameFunctions.hpp"
 
 using namespace g80;
 using namespace snake;
-
+    
 auto main(int argc, char **argv) -> int {
 
     const Area area(130, 40);
-    
+    TextImage arena(area);
     FieldStateMgr fsm(area);
-    VectorPoint snake_head({{
+    set_fsm_of_arena(fsm);
+    
+    Snake snake({{
         static_cast<Dim>(area.w / 2),
         static_cast<Dim>(area.h / 2)}, {
-        1, 0
-    }});
-    Snake snake(snake_head, 10);
-    TextImage arena(area);
+        1, 0}}, 10);
 
-    set_fsm_of_arena(fsm);
     bool is_gameover = false;
     bool is_auto = false;
     do {
@@ -37,7 +35,8 @@ auto main(int argc, char **argv) -> int {
         }
         
         if (!fsm.has_egg())
-            fsm.get_next_egg_point();
+            if (!fsm.get_next_egg_point().has_value())
+                break;
 
         snake.move_head();
 
@@ -52,6 +51,7 @@ auto main(int argc, char **argv) -> int {
                 fsm.set_point_as_free(snake.get_tail());
                 snake.remove_tail_from_body();
             }
+
         } else {
             is_gameover = true;
         }
@@ -62,5 +62,4 @@ auto main(int argc, char **argv) -> int {
         delay_until_next_frame(start);
 
     } while(!is_gameover);
-
 }
