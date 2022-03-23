@@ -15,6 +15,10 @@ auto snake::Snake::get_head() const -> const Point & {
     return head_.point;
 }
 
+auto snake::Snake::get_head_direction() const -> const VectorPoint & {
+    return head_;
+}
+
 auto snake::Snake::get_tail() const -> const Point & {
     return body_.back();
 }

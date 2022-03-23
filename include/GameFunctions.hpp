@@ -2,6 +2,8 @@
 #include <chrono>
 #include <thread>
 #include <stack>
+#include <vector>
+#include <tuple>
 
 #include "TextImage.h"
 #include "Snake.h"
@@ -58,6 +60,7 @@ namespace snake {
         
 
         Point egg{-1, -1};
+        Point egg_location = fsm.get_egg_point();
         do {
             Path path = path_finder.top();
             path_finder.pop();
@@ -67,36 +70,119 @@ namespace snake {
                 break;
             }
 
-            if (path.p.x - 1 >= 0 && arena[path.p.y][path.p.x - 1].state_type_id < -1) {
+            int left_point = egg_location.x -  path.p.x + 1;
+            if (left_point < 0) left_point *= -1;
+            int right_point = egg_location.x -  path.p.x - 1;
+            if (right_point < 0) right_point *= -1;
+            int up_point = egg_location.y - path.p.y + 1;
+            if (up_point < 0) up_point *= -1;
+            int down_point = egg_location.y - path.p.y - 1;
+            if (down_point < 0) down_point *= -1;
+
+
+            std::vector<std::tuple<DIRECTION, int>> optimized_path;
+            VectorPoint snake_direction = snake.get_head_direction();
+            if (snake_direction.dir.xn == -1 && egg.x >= snake_direction.point.x) {
+                optimized_path.emplace_back(std::make_tuple(LEFT, left_point));
+                optimized_path.emplace_back(std::make_tuple(RIGHT, right_point));
+                optimized_path.emplace_back(std::make_tuple(UP, up_point));
+                optimized_path.emplace_back(std::make_tuple(DOWN, down_point));
+
+            } else if (snake_direction.dir.xn == -1 && egg.x < snake_direction.point.x) {
+                optimized_path.emplace_back(std::make_tuple(RIGHT, right_point));
+                optimized_path.emplace_back(std::make_tuple(LEFT, left_point));
+                optimized_path.emplace_back(std::make_tuple(UP, up_point));
+                optimized_path.emplace_back(std::make_tuple(DOWN, down_point));
+        
+            } else if (snake_direction.dir.xn == 1 && egg.x >= snake_direction.point.x) {
+                optimized_path.emplace_back(std::make_tuple(LEFT, left_point));
+                optimized_path.emplace_back(std::make_tuple(DOWN, down_point));
+                optimized_path.emplace_back(std::make_tuple(UP, up_point));
+                optimized_path.emplace_back(std::make_tuple(RIGHT, right_point));
+
+            } else if (snake_direction.dir.xn == 1 && egg.x < snake_direction.point.x) {
+                optimized_path.emplace_back(std::make_tuple(RIGHT, right_point));
+                optimized_path.emplace_back(std::make_tuple(LEFT, left_point));
+                optimized_path.emplace_back(std::make_tuple(UP, up_point));
+                optimized_path.emplace_back(std::make_tuple(DOWN, down_point));
+
+            } else if (snake_direction.dir.yn == -1 && egg.y >= snake_direction.point.y) {
+                optimized_path.emplace_back(std::make_tuple(UP, up_point));
+                optimized_path.emplace_back(std::make_tuple(DOWN, down_point));
+                optimized_path.emplace_back(std::make_tuple(LEFT, left_point));
+                optimized_path.emplace_back(std::make_tuple(RIGHT, right_point));
+
+            } else if (snake_direction.dir.yn == -1 && egg.y < snake_direction.point.y) {
+                optimized_path.emplace_back(std::make_tuple(DOWN, down_point));
+                optimized_path.emplace_back(std::make_tuple(LEFT, left_point));
+                optimized_path.emplace_back(std::make_tuple(RIGHT, right_point));
+                optimized_path.emplace_back(std::make_tuple(UP, up_point));
                 
-                if (arena[path.p.y][path.p.x - 1].state_type_id == -3)
-                    arena[path.p.y][path.p.x - 1].state_type_id = path.n + 1;
-                arena[path.p.y][path.p.x - 1].d = LEFT;
-                path_finder.push({{static_cast<Dim>(path.p.x - 1), path.p.y}, static_cast<Dim>(path.n + 1)});
-            }
-
-            if (path.p.x + 1 < fsm.width() && arena[path.p.y][path.p.x + 1].state_type_id < -1) {
-                if (arena[path.p.y][path.p.x + 1].state_type_id == -3)
-                    arena[path.p.y][path.p.x + 1].state_type_id = path.n + 1;
-                arena[path.p.y][path.p.x + 1].d = RIGHT;
-                path_finder.push({{static_cast<Dim>(path.p.x + 1), path.p.y}, static_cast<Dim>(path.n + 1)});
-            }
-
-            if (path.p.y - 1 >= 0 && arena[path.p.y - 1][path.p.x].state_type_id < -1) {
-                if (arena[path.p.y - 1][path.p.x].state_type_id == -3)
-                    arena[path.p.y - 1][path.p.x].state_type_id = path.n + 1;
-                arena[path.p.y - 1][path.p.x].d = UP;
-                path_finder.push({{path.p.x, static_cast<Dim>(path.p.y - 1)}, static_cast<Dim>(path.n + 1)});
-            }
-
-            if (path.p.y + 1 < fsm.height() && arena[path.p.y + 1][path.p.x].state_type_id < -1) {
-                if (arena[path.p.y + 1][path.p.x].state_type_id == -3)
-                    arena[path.p.y + 1][path.p.x].state_type_id = path.n + 1;
-                arena[path.p.y + 1][path.p.x].d = DOWN;
-                path_finder.push({{path.p.x, static_cast<Dim>(path.p.y + 1)}, static_cast<Dim>(path.n + 1)});
+            } else if (snake_direction.dir.yn == 1 && egg.y >= snake_direction.point.y) {                
+                optimized_path.emplace_back(std::make_tuple(UP, up_point));
+                optimized_path.emplace_back(std::make_tuple(LEFT, left_point));
+                optimized_path.emplace_back(std::make_tuple(RIGHT, right_point));
+                optimized_path.emplace_back(std::make_tuple(DOWN, down_point));
+                
+            } else { // if (snake_direction.dir.yn == 1 && egg.y < snake_direction.point.y) {
+                optimized_path.emplace_back(std::make_tuple(UP, up_point));
+                optimized_path.emplace_back(std::make_tuple(DOWN, down_point));
+                optimized_path.emplace_back(std::make_tuple(LEFT, left_point));
+                optimized_path.emplace_back(std::make_tuple(RIGHT, right_point));
+                
             }
 
 
+
+
+            // std::sort(
+            //     optimized_path.begin(), 
+            //     optimized_path.end(), 
+            //     [&](std::tuple<DIRECTION, int> lhs, std::tuple<DIRECTION, int> rhs) {
+            //         return std::get<1>(lhs) < std::get<1>(rhs);
+            // });
+            
+            for(auto &o : optimized_path) {
+                switch(std::get<0>(o)) {
+                case LEFT:
+                    //std::cout << "LEFT: " << std::get<1>(o) << "\n";
+                    if (path.p.x - 1 >= 0 && arena[path.p.y][path.p.x - 1].state_type_id < -1) {
+                        if (arena[path.p.y][path.p.x - 1].state_type_id == -3)
+                            arena[path.p.y][path.p.x - 1].state_type_id = path.n + 1;
+                        arena[path.p.y][path.p.x - 1].d = LEFT;
+                        path_finder.push({{static_cast<Dim>(path.p.x - 1), path.p.y}, static_cast<Dim>(path.n + 1)});
+                    }
+                    break;
+                case RIGHT:
+                    //std::cout << "RIGHT: " << std::get<1>(o) << "\n";
+                    if (path.p.x + 1 < fsm.width() && arena[path.p.y][path.p.x + 1].state_type_id < -1) {
+                        if (arena[path.p.y][path.p.x + 1].state_type_id == -3)
+                            arena[path.p.y][path.p.x + 1].state_type_id = path.n + 1;
+                        arena[path.p.y][path.p.x + 1].d = RIGHT;
+                        path_finder.push({{static_cast<Dim>(path.p.x + 1), path.p.y}, static_cast<Dim>(path.n + 1)});
+                    }
+                    break;
+                case UP:   
+                    //std::cout << "UP: " << std::get<1>(o) << "\n";
+                    if (path.p.y - 1 >= 0 && arena[path.p.y - 1][path.p.x].state_type_id < -1) {
+                        if (arena[path.p.y - 1][path.p.x].state_type_id == -3)
+                            arena[path.p.y - 1][path.p.x].state_type_id = path.n + 1;
+                        arena[path.p.y - 1][path.p.x].d = UP;
+                        path_finder.push({{path.p.x, static_cast<Dim>(path.p.y - 1)}, static_cast<Dim>(path.n + 1)});
+                    }
+                    break;
+                case DOWN:   
+                    //std::cout << "DOWN: " << std::get<1>(o) << "\n";
+                    if (path.p.y + 1 < fsm.height() && arena[path.p.y + 1][path.p.x].state_type_id < -1) {
+                        if (arena[path.p.y + 1][path.p.x].state_type_id == -3)
+                            arena[path.p.y + 1][path.p.x].state_type_id = path.n + 1;
+                        arena[path.p.y + 1][path.p.x].d = DOWN;
+                        path_finder.push({{path.p.x, static_cast<Dim>(path.p.y + 1)}, static_cast<Dim>(path.n + 1)});
+                    }
+                    break;
+                }
+            }
+            //exit(0);
         } while (!path_finder.empty());
 
         for (Dim i = 0; i < fsm.height(); ++i) {
@@ -123,9 +209,9 @@ namespace snake {
         
         if (egg.x >= 0) {
             while (arena[egg.y][egg.x].d != ORIGIN) {
-                if (arena[egg.y][egg.x].d != EGG)
+                if (arena[egg.y][egg.x].state_type_id != EGG)
                     fsm.set_point_trail(egg);
-                    
+
                 found_path.push(arena[egg.y][egg.x].d);
                 switch(arena[egg.y][egg.x].d) {
                     case UP:

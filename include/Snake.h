@@ -41,6 +41,7 @@ namespace snake {
         Snake(const VectorPoint &head, const Dim body_to_egg_ratio);
         auto move_head() -> void;
         auto get_head() const -> const Point &;
+        auto get_head_direction() const -> const VectorPoint &;
         auto get_tail() const -> const Point &;
         auto does_head_hits_egg(const Point &egg) const -> bool;
         auto increase_length() -> void;
