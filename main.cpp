@@ -17,7 +17,7 @@ auto main(int argc, char **argv) -> int {
 
     bool is_gameover = false;
     bool is_auto = false;
-    FoundPath auto_found_path;
+    //FoundPath auto_found_path;
     
     do {
         TimePointSysClock start {SysClock::now()};
@@ -28,15 +28,14 @@ auto main(int argc, char **argv) -> int {
                 is_gameover = false;
 
             } else if (key == ' ') {
-                if (is_auto == true) is_auto = false;
-                else is_auto = true;
-
-                if (is_auto) {
-                    while (!auto_found_path.empty())
-                        auto_found_path.pop();
-
-                    auto_found_path = path_finder(fsm, snake);
-                }
+                is_auto = !is_auto;
+                // if (is_auto == true) is_auto = false;
+                // else is_auto = true;
+                // if (is_auto) {
+                //     // while (!auto_found_path.empty())
+                //     //     auto_found_path.pop();
+                //     // auto_found_path = path_finder(fsm, snake);
+                // }
             } else if (!is_auto) {
                 if (key == 'd') snake.move_right();
                 else if (key == 'a') snake.move_left();
@@ -45,16 +44,16 @@ auto main(int argc, char **argv) -> int {
             } 
         }
         
-        if (is_auto) {
-            if (auto_found_path.size() > 0) {
-                DIRECTION d = auto_found_path.top();
-                auto_found_path.pop();
-                if (d == RIGHT) snake.move_right();
-                else if (d == LEFT) snake.move_left();
-                else if (d == UP) snake.move_up();
-                else if (d == DOWN) snake.move_down();
-            }
-        }
+        // if (is_auto) {
+        //     if (auto_found_path.size() > 0) {
+        //         DIRECTION d = auto_found_path.top();
+        //         auto_found_path.pop();
+        //         if (d == RIGHT) snake.move_right();
+        //         else if (d == LEFT) snake.move_left();
+        //         else if (d == UP) snake.move_up();
+        //         else if (d == DOWN) snake.move_down();
+        //     }
+        // }
 
         // The interested viewer should look at this function
         // get_next_egg_point();
@@ -69,11 +68,11 @@ auto main(int argc, char **argv) -> int {
                 snake.increase_length();
                 fsm.get_next_egg_point();
 
-                if (is_auto) {
-                    while (!auto_found_path.empty())
-                        auto_found_path.pop();
-                    auto_found_path = path_finder(fsm, snake);
-                }
+                // if (is_auto) {
+                //     while (!auto_found_path.empty())
+                //         auto_found_path.pop();
+                //     auto_found_path = path_finder(fsm, snake);
+                // }
             }
             snake.add_new_head_to_body();
             fsm.set_point_as_used(snake.get_head(), SNAKE_BODY);
