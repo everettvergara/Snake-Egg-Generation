@@ -15,7 +15,7 @@ using namespace g80;
 
 namespace snake {
 
-    constexpr int FPS = 5;
+    constexpr int FPS = 15;
     constexpr int MSPF = 1000 / FPS;
     constexpr char KEY_ESCAPE = 27;
     

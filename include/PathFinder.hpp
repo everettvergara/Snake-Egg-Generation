@@ -5,7 +5,7 @@
 #include <stack>
 #include <unordered_set>
 #include <set>
-// #include <map>
+#include <cassert> 
 
 #include "Dim.hpp"
 #include "Point.hpp"
@@ -75,10 +75,10 @@ namespace snake {
             int ctr = 0;
             while(to_be_visited_.size() > 0) {
                 auto top_set = to_be_visited_.begin();
-                c_ix = *top_set / S_;
+                c_ix = *top_set % S_;
                 Point c{static_cast<Dim>(c_ix % M_), static_cast<Dim>(c_ix / M_)};
                 
-                display_to_be_visited();
+                // display_to_be_visited();
                 to_be_visited_.erase(top_set);
                 visited_.insert(c_ix);
 
@@ -86,17 +86,17 @@ namespace snake {
                     break;
                 
                 compute_f_neighbor(c, egg_location_op.value());
-                display_to_be_visited();
-                display_ch();
-                exit(0);
+                // display_to_be_visited();
+                // display_ch();
+                // exit(0);
 
                 ctr++;
             }
 
             if (c_ix == e_ix) {
 
-                std::cout << "FOUND";;
-                exit(0);
+                // std::cout << "FOUND";;
+                // exit(0);
 
                 Point stack_trace = egg_location_op.value();
                 Dim st = get_ix(stack_trace);
@@ -104,6 +104,7 @@ namespace snake {
                 Dim s_ix = get_ix(snake.get_head());
                     
                 while(st != s_ix) {
+                    
                     if (path_cells_[st].path_cell_type == RIGHT) 
                         --stack_trace.x;
                     else if (path_cells_[st].path_cell_type == LEFT)
@@ -116,15 +117,20 @@ namespace snake {
                     st = get_ix(stack_trace);
                     if (fsm.get_state_type_ix(st) == FREE)
                         fsm.set_ix_trail(st);
-                    path_found.push(path_cells_[st].path_cell_type);
+                    
+                    if (path_cells_[st].path_cell_type == LEFT || path_cells_[st].path_cell_type == RIGHT ||
+                        path_cells_[st].path_cell_type == UP || path_cells_[st].path_cell_type == DOWN)
+                        path_found.push(path_cells_[st].path_cell_type);
                 }
+
+                // display_path_found(path_found);
+                // display_ch();
+                // exit(0);
             }
 
             // std::cout << "here: " << c_ix << " - " << e_ix << " ctr: " << ctr;
             // display_ch();
             // exit(0);
-
- 
 
             return path_found;
         }
@@ -159,6 +165,19 @@ namespace snake {
             return 14 * dx + 10 * (dy - dx);
         }
 
+        auto get_path_cell_type_name(const PathCellType &pct) -> const std::string & {
+            static const std::string path_cell_type_names[] = {"<", ">", "v", "^", "o", "#", " ", "x"};
+            return path_cell_type_names[pct];
+        }
+
+        auto display_path_found(PathFound path_found) -> void {
+            std::cout << "\nDisplay path:\n";
+            while(!path_found.empty()) {
+                PathCellType cell_type = path_found.top();
+                path_found.pop();
+                std::cout << get_path_cell_type_name(cell_type) << "\n";
+            }
+        }
 
         auto compute_f_neighbor(const Point &p, const Point &target) -> void {
 

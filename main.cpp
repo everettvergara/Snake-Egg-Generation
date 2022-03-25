@@ -5,7 +5,7 @@ using namespace snake;
 
 auto main(int argc, char **argv) -> int {
 
-    const Area area(25, 25);
+    const Area area(140, 40);
     TextImage arena(area);
     FieldStateMgr fsm(area);
     set_fsm_of_arena(fsm);
@@ -69,13 +69,13 @@ auto main(int argc, char **argv) -> int {
                 snake.increase_length();
                 fsm.get_next_egg_point();
 
-                if (is_auto) {
-                    while (!path_found.empty()) 
-                        path_found.pop();
+                // if (is_auto) {
+                //     while (!path_found.empty()) 
+                //         path_found.pop();
 
-                    PathFinder path_finder(area.h, area.w);
-                    path_found = path_finder.find_path_to_egg(fsm, snake);
-                }
+                //     PathFinder path_finder(area.h, area.w);
+                //     path_found = path_finder.find_path_to_egg(fsm, snake);
+                // }
             }
             snake.add_new_head_to_body();
             fsm.set_point_as_used(snake.get_head(), SNAKE_BODY);
