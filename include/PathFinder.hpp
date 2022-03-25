@@ -13,7 +13,7 @@
 
 namespace snake {
 
-    enum PathCellType {LEFT, RIGHT, DOWN, UP, ORIGIN, BLOCKED_CELL, FREE_CELL, DESTINATION };
+    enum PathCellType {LEFT, RIGHT, DOWN, UP, ORIGIN, BLOCKED_CELL, FREE_CELL, DESTINATION};
 
     struct PathCell {
         Dim g, h;
@@ -43,7 +43,7 @@ namespace snake {
             path_cells_(std::make_unique<PathCell[]>(S_)),
             debug_cells_(std::make_unique<CellChar[]>(S_)) {};
 
-        auto display_ch() -> void {
+        auto debug_ch() -> void {
             std::cout << "\n\nPath:\n";
             for (Dim i = 0; i < N_; ++i) {
                 for (Dim j = 0; j < M_; ++j)
@@ -52,7 +52,7 @@ namespace snake {
             }
         }
 
-        auto display_to_be_visited() -> void {
+        auto debug_to_be_visited() -> void {
             std::cout << "\n\nTo be Visisted:\n";
             for (auto &tbv : to_be_visited_)
                 std::cout << tbv << ", ix: " << tbv % S_ << "["<< ((tbv % S_) / M_)<< "]["<< ((tbv % S_) % M_)<< "]" << " f: " << tbv / S_ << "\n";  
@@ -67,18 +67,16 @@ namespace snake {
             if (!egg_location_op.has_value())
                 return path_found;
 
-
             Dim c_ix = ~0, e_ix = egg_location_op.value().y * M_ + egg_location_op.value().x;
             
             compute_f_neighbor(snake.get_head(), egg_location_op.value());
 
-            int ctr = 0;
             while(to_be_visited_.size() > 0) {
                 auto top_set = to_be_visited_.begin();
                 c_ix = *top_set % S_;
                 Point c{static_cast<Dim>(c_ix % M_), static_cast<Dim>(c_ix / M_)};
                 
-                // display_to_be_visited();
+                // debug_to_be_visited();
                 to_be_visited_.erase(top_set);
                 visited_.insert(c_ix);
 
@@ -86,26 +84,15 @@ namespace snake {
                     break;
                 
                 compute_f_neighbor(c, egg_location_op.value());
-                // display_to_be_visited();
-                // display_ch();
-                // exit(0);
-
-                ctr++;
             }
 
             if (c_ix == e_ix) {
-
-                
-                // std::cout << "FOUND";;
-                // exit(0);
-
                 Point stack_trace = egg_location_op.value();
                 Dim st = get_ix(stack_trace);
                 path_found.push(path_cells_[st].path_cell_type);
                 Dim s_ix = get_ix(snake.get_head());
                     
                 while(st != s_ix) {
-                    
                     if (path_cells_[st].path_cell_type == RIGHT) 
                         --stack_trace.x;
                     else if (path_cells_[st].path_cell_type == LEFT)
@@ -119,20 +106,10 @@ namespace snake {
                     if (fsm.get_state_type_ix(st) == FREE)
                         fsm.set_ix_trail(st);
                     
-                    if (path_cells_[st].path_cell_type == LEFT || path_cells_[st].path_cell_type == RIGHT ||
-                        path_cells_[st].path_cell_type == UP || path_cells_[st].path_cell_type == DOWN)
+                    if (path_cells_[st].path_cell_type <= UP)
                         path_found.push(path_cells_[st].path_cell_type);
                 }
-
-                // display_path_found(path_found);
-                // display_ch();
-                // exit(0);
             }
-
-            // std::cout << "here: " << c_ix << " - " << e_ix << " ctr: " << ctr;
-            // display_ch();
-            // exit(0);
-
             return path_found;
         }
 
@@ -171,7 +148,7 @@ namespace snake {
             return path_cell_type_names[pct];
         }
 
-        auto display_path_found(PathFound path_found) -> void {
+        auto debug_path_found(PathFound path_found) -> void {
             std::cout << "\nDisplay path:\n";
             while(!path_found.empty()) {
                 PathCellType cell_type = path_found.top();

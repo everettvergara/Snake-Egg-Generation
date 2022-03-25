@@ -23,14 +23,6 @@ namespace snake {
     using TimePointSysClock = chr::time_point<chr::system_clock>;
     using SysClock = chr::system_clock;
 
-    // enum DIRECTION {UP, DOWN, LEFT, RIGHT, ORIGIN, NA};
-    // struct Path {Point p; Dim n; DIRECTION d;};
-    // using PathFinder = std::stack<Path>;
-    // using FoundPath = std::stack<DIRECTION>;
-    // auto path_finder(FieldStateMgr &fsm, const Snake &snake) -> FoundPath {
-    //
-    // }
-
     auto set_fsm_of_arena(FieldStateMgr &fsm) -> void {
         for (Dim i = 0; i < fsm.height(); ++i) {
             fsm.set_point_as_used({0, i}, BLOCK);
@@ -40,6 +32,14 @@ namespace snake {
             fsm.set_point_as_used({i, 0}, BLOCK);
             fsm.set_point_as_used({i, static_cast<Dim>(fsm.height() - 1)}, BLOCK);
         }
+
+        // Add Blockades
+        for (Dim i = 5; i < fsm.height() - 5; ++i) {
+            fsm.set_point_as_used({static_cast<Dim>(fsm.width() / 2), i}, BLOCK);
+            fsm.set_point_as_used({static_cast<Dim>(fsm.width() / 4), i}, BLOCK);
+            fsm.set_point_as_used({static_cast<Dim>(fsm.width() / 2 + fsm.width() / 4), i}, BLOCK);
+        }
+
     }
 
     auto set_arena(const FieldStateMgr &fsm, const Snake &snake, TextImage &arena, bool is_auto) -> void {
@@ -49,7 +49,7 @@ namespace snake {
         TextImage block("#", 7, ON);
         TextImage free(" ", 0, ON);
         TextImage egg("@", 1, ON);
-        TextImage trail(".", 7, ON);
+        TextImage trail(".", 3, ON);
         TextImage bug("?", 7, ON);
         
         TextImage snake_stripes[3] = {
