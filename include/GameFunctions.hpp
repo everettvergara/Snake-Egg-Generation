@@ -9,6 +9,7 @@
 #include "Snake.h"
 #include "FieldStateMgr.h"
 #include "Misc.hpp"
+#include "PathFinder.hpp"
 
 using namespace g80;
 
