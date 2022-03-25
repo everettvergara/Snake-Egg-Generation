@@ -45,26 +45,8 @@ auto main(int argc, char **argv) -> int {
          * 
          */
 
-        if (is_key_pressed()) {
-            char key = getchar();
-            if (key == KEY_ESCAPE) {
-                is_gameover = true;
-
-            } else if (key == KEY_SPACE_BAR) {
-                is_auto = !is_auto;
-                remove_trail(fsm, snake, path_found);
-                if (is_auto) {
-                    PathFinder path_finder(area.h, area.w); 
-                    path_found = path_finder.find_path_to_egg(fsm, snake);
-                }
-
-            } else if (!is_auto) {
-                if (key == 'd') snake.move_right();
-                else if (key == 'a') snake.move_left();
-                else if (key == 'w') snake.move_up();
-                else if (key == 's') snake.move_down();
-            } 
-        }
+        if (is_key_pressed())
+            accept_inputs(fsm, snake, path_found, is_auto, is_gameover);
         
         /*
          * If on AUTO MODE: 
@@ -117,10 +99,9 @@ auto main(int argc, char **argv) -> int {
                 snake.remove_tail_from_body();
             }
 
-            if (is_auto && path_found.empty()) {
-                PathFinder path_finder(area.h, area.w); 
-                path_found = path_finder.find_path_to_egg(fsm, snake);
-            }
+            if (is_auto && path_found.empty()) 
+                get_path_found(fsm, snake, path_found);
+
 
         } else {
             is_gameover = true;

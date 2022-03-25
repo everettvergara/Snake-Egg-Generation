@@ -25,19 +25,6 @@ namespace snake {
     using TimePointSysClock = chr::time_point<chr::system_clock>;
     using SysClock = chr::system_clock;
 
-    auto auto_move_snake(Snake &snake, PathFound &path_found) -> void {
-        PathCellType path_cell_type = path_found.top();
-        path_found.pop();
-        if (path_cell_type == RIGHT) 
-            snake.move_right();
-        else if (path_cell_type == LEFT) 
-            snake.move_left();
-        else if (path_cell_type == UP) 
-            snake.move_up();
-        else 
-            snake.move_down();
-    }
-
     auto remove_trail(FieldStateMgr &fsm, const Snake &snake, PathFound &path_found) {
         Point trail = snake.get_head();
         while (!path_found.empty()) {
@@ -50,6 +37,46 @@ namespace snake {
                 fsm.clear_point_trail(trail);
             path_found.pop();
         }
+    }
+    
+    auto get_path_found(FieldStateMgr &fsm, const Snake &snake, PathFound &path_found) -> void {
+        PathFinder path_finder(fsm.height(), fsm.width()); 
+        path_found = path_finder.find_path_to_egg(fsm, snake);
+    }
+
+    auto accept_inputs(FieldStateMgr &fsm, Snake &snake, PathFound &path_found, bool &is_auto, bool &is_gameover) -> void {
+        char key = getchar();
+        if (key == KEY_ESCAPE) {
+            is_gameover = true;
+
+        } else if (key == KEY_SPACE_BAR) {
+            is_auto = !is_auto;
+            remove_trail(fsm, snake, path_found);
+            if (is_auto) 
+                get_path_found(fsm, snake, path_found);
+        } else if (!is_auto) {
+            if (key == 'd') 
+                snake.move_right();
+            else if (key == 'a') 
+                snake.move_left();
+            else if (key == 'w') 
+                snake.move_up();
+            else if (key == 's') 
+                snake.move_down();
+        } 
+    }
+
+    auto auto_move_snake(Snake &snake, PathFound &path_found) -> void {
+        PathCellType path_cell_type = path_found.top();
+        path_found.pop();
+        if (path_cell_type == RIGHT) 
+            snake.move_right();
+        else if (path_cell_type == LEFT) 
+            snake.move_left();
+        else if (path_cell_type == UP) 
+            snake.move_up();
+        else 
+            snake.move_down();
     }
 
     auto set_fsm_of_arena(FieldStateMgr &fsm) -> void {
