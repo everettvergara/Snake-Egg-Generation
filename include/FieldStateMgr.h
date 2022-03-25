@@ -85,6 +85,8 @@ namespace snake {
         // Dims
         auto height() const -> Dim;
         auto width() const -> Dim;
+        auto get_used() const -> Dim;
+        auto get_unused() const -> Dim;
 
         // Get State Type
         auto get_state_type_point(const Point &point) const -> const StateType &;

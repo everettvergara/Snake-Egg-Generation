@@ -194,3 +194,10 @@ auto snake::FieldStateMgr::clear_ix_trail(const Dim &ix) -> void {
     type_[ix] = FREE;
 }
 
+auto snake::FieldStateMgr::get_used() const -> Dim {
+    return area_() - div_;
+}
+
+auto snake::FieldStateMgr::get_unused() const -> Dim {
+    return div_;
+}

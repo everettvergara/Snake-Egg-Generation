@@ -1,9 +1,11 @@
 #include <iostream>
+#include <iomanip>
 #include <chrono>
 #include <thread>
-#include <stack>
-#include <vector>
-#include <tuple>
+#include <sstream>
+// #include <stack>
+// #include <vector>
+// #include <tuple>
 
 #include "TextImage.h"
 #include "Snake.h"
@@ -19,7 +21,6 @@ namespace snake {
     constexpr int MSPF = 1000 / FPS;
     constexpr char KEY_ESCAPE = 27;
     constexpr char KEY_SPACE_BAR = 32;
-
     
     namespace chr = std::chrono;
     using TimePointSysClock = chr::time_point<chr::system_clock>;
@@ -38,7 +39,7 @@ namespace snake {
             path_found.pop();
         }
     }
-    
+
     auto get_path_found(FieldStateMgr &fsm, const Snake &snake, PathFound &path_found) -> void {
         PathFinder path_finder(fsm.height(), fsm.width()); 
         path_found = path_finder.find_path_to_egg(fsm, snake);
@@ -79,26 +80,41 @@ namespace snake {
             snake.move_down();
     }
 
-    auto set_fsm_of_arena(FieldStateMgr &fsm) -> void {
+    auto set_fsm_of_arena(FieldStateMgr &fsm, bool is_easy) -> void {
         for (Dim i = 0; i < fsm.height(); ++i) {
             fsm.set_point_as_used({0, i}, BLOCK);
             fsm.set_point_as_used({DIM(fsm.width() - 1), i}, BLOCK);
         }
+
         for (Dim i = 1; i < fsm.width() - 1; ++i) {
             fsm.set_point_as_used({i, 0}, BLOCK);
             fsm.set_point_as_used({i, DIM(fsm.height() - 1)}, BLOCK);
         }
-        for (Dim i = 5; i < fsm.height() - 5; ++i) {
-            fsm.set_point_as_used({DIM(fsm.width() / 2), i}, BLOCK);
-            fsm.set_point_as_used({DIM(fsm.width() / 4), i}, BLOCK);
-            fsm.set_point_as_used({DIM(fsm.width() / 2 + fsm.width() / 4), i}, BLOCK);
+
+        if (is_easy) {
+            for (Dim i = 5; i < fsm.height() - 5; ++i) {
+                fsm.set_point_as_used({DIM(fsm.width() / 2), i}, BLOCK);
+                fsm.set_point_as_used({DIM(fsm.width() / 4), i}, BLOCK);
+                fsm.set_point_as_used({DIM(fsm.width() / 2 + fsm.width() / 4), i}, BLOCK);
+            }
+        } else {
+            for (Dim i = 0; i < fsm.height() * fsm.width() * 5 / 100; ++i) {
+                Dim r = rand() % (fsm.height() * fsm.width());
+                if (fsm.get_state_type_ix(r) == FREE)
+                    fsm.set_ix_as_used(r, BLOCK);
+            }
         }
     }
 
     auto set_arena(const FieldStateMgr &fsm, const Snake &snake, TextImage &arena, bool is_auto) -> void {
         arena.fill_text(" ");
-        TextImage automatic("Automatic", 3, ON);
-        TextImage manual("Manual", 3, ON);
+        
+        float eff_value = 100.0f * fsm.get_unused() / (fsm.width() * fsm.height());
+        std::stringstream ss;
+        ss << " Old %Eff: " << std::fixed << std::setprecision(2) << eff_value << " vs. New %Eff: 100.00% "; 
+        TextImage efficiency(ss.str(), 1, ON);
+        TextImage automatic(" Auto (esc, ' ') ", 3, ON);
+        TextImage manual(" Manual (esc, ' ', w,a,s,d) ", 3, ON);
         TextImage block("#", 7, ON);
         TextImage free(" ", 0, ON);
         TextImage egg("@", 1, ON);
@@ -135,11 +151,12 @@ namespace snake {
 
         // Display instructions
         if (is_auto)
-            arena.or_image(automatic, {10, 0});
+            arena.or_image(automatic, {2, 0});
         else 
-            arena.or_image(manual, {10, 0});
+            arena.or_image(manual, {2, 0});
 
-        
+        arena.or_image(efficiency, {30, 0});
+
         int c = 0;
         for (auto &b : snake.get_body()) {
             arena.or_image(snake_stripes[c], b);

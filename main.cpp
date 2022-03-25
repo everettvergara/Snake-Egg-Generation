@@ -5,8 +5,40 @@ using namespace snake;
 
 auto main(int argc, char **argv) -> int {
 
+    std::cout << "\n\n";
+    std::cout << "****************************************************\n";
+    std::cout << "* //////////////////////////////////////////////// *\n";
+    std::cout << "*                                                  *\n";
+    std::cout << "* A non-ECS Snake Demo of efficient Egg Generation *\n";
+    std::cout << "*                      by Everett Gaius S. Vergara *\n";
+    std::cout << "*                                                  *\n";
+    std::cout << "* Check the full source code and exaplanation at:  *\n";
+    std::cout << "* github.com/everettvergara/SnakeEggGeneration     *\n";
+    std::cout << "*                                                  *\n";
+    std::cout << "* %Eff of speed of new technique is 100% since     *\n";
+    std::cout << "* it's O(1) efficient.                             *\n";
+    std::cout << "*                                                  *\n";
+    std::cout << "* %Eff of old technique to generate eggs           *\n";
+    std::cout << "* with respect to new technique is:                *\n";
+    std::cout << "*   unused cells / total cells x 100%              *\n";
+    std::cout << "*                                                  *\n";
+    std::cout << "* The efficiency deteriorates as the snake gets    *\n";
+    std::cout << "* longer.                                          *\n";
+    std::cout << "*                                                  *\n";
+    std::cout << "****************************************************\n";
+    std::cout << "\n\n";
+    std::cout << " Input mode of play:\n";
+    std::cout << " (1) Easy\n";
+    std::cout << " (2) Hell\n\n";
+    std::cout << " any other input will Exit: _";
+    
+    Dim mode_of_play;
+    std::cin >> mode_of_play;
+    if ((mode_of_play & 3) == 0)
+        return 0;
+
     /*
-     * I dont have to say this but 
+     * I don't have to say this but 
      * here's the section where you declare 
      * and initialize vars.
      * 
@@ -15,16 +47,24 @@ auto main(int argc, char **argv) -> int {
     const Area area(140, 40);
     TextImage arena(area);
     FieldStateMgr fsm(area);
-    set_fsm_of_arena(fsm);
+    set_fsm_of_arena(fsm, (mode_of_play == 1));
     
     Snake snake({{
-        DIM(area.w / 2),
-        DIM(area.h / 2)}, {
-        1, 0}}, 10);
+        DIM(area.w / 2),            // Starting X of snake
+        DIM(area.h / 2)},           // Starting Y of snake
+        {1, 0}},                    // Direction (Xn, Yn)
+        10                          // Additional length of Snake when egg is eaten
+    );
 
     bool is_gameover = false;
     bool is_auto = false;
     PathFound path_found;
+    
+    /*
+     * Speed efficiency of OLD Technique is 
+     * calculated at Unused / Total x 100% 
+     * 
+     */
 
     do {
         /*
@@ -83,29 +123,25 @@ auto main(int argc, char **argv) -> int {
          */
 
         snake.move_head();
-        if (fsm.is_point_free(snake.get_head())) {
+        if (!fsm.is_point_free(snake.get_head()))
+            break;
 
-            if (snake.does_head_hits_egg(fsm.get_egg_point())) {
-                snake.increase_length();
-                fsm.get_next_egg_point();
-            }
-
-            snake.add_new_head_to_body();
-
-            fsm.set_point_as_used(snake.get_head(), SNAKE_BODY);
-            
-            if (snake.get_body().size() > snake.get_max_body_length()) {
-                fsm.set_point_as_free(snake.get_tail());
-                snake.remove_tail_from_body();
-            }
-
-            if (is_auto && path_found.empty()) 
-                get_path_found(fsm, snake, path_found);
-
-
-        } else {
-            is_gameover = true;
+        if (snake.does_head_hits_egg(fsm.get_egg_point())) {
+            snake.increase_length();
+            fsm.get_next_egg_point();
         }
+
+        snake.add_new_head_to_body();
+
+        fsm.set_point_as_used(snake.get_head(), SNAKE_BODY);
+        
+        if (snake.get_body().size() > snake.get_max_body_length()) {
+            fsm.set_point_as_free(snake.get_tail());
+            snake.remove_tail_from_body();
+        }
+
+        if (is_auto && path_found.empty()) 
+            get_path_found(fsm, snake, path_found);
 
         /*
          * Redraws the entire arena and show 
@@ -128,4 +164,6 @@ auto main(int argc, char **argv) -> int {
         delay_until_next_frame(start);
 
     } while(!is_gameover);
+
+    std::cout << "Game Over!!!" << std::endl; 
 }
