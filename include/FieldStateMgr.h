@@ -91,7 +91,8 @@ namespace snake {
         auto get_state_type_ix(const Dim &ix) const -> const StateType &;
         auto set_point_trail(const Point &point) -> void;
         auto set_ix_trail(const Dim &ix) -> void;
-
+        auto clear_point_trail(const Point &point) -> void;
+        auto clear_ix_trail(const Dim &ix) -> void;
 
         // Debuggers
         auto debug() -> void;

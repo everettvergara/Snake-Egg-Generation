@@ -5,7 +5,6 @@
 #include <stack>
 #include <unordered_set>
 #include <set>
-#include <cassert> 
 
 #include "Dim.hpp"
 #include "Point.hpp"

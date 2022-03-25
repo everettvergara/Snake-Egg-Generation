@@ -185,3 +185,12 @@ auto snake::FieldStateMgr::set_point_trail(const Point &point) -> void {
 auto snake::FieldStateMgr::set_ix_trail(const Dim &ix) -> void {
     type_[ix] = TRAIL;
 }
+
+auto snake::FieldStateMgr::clear_point_trail(const Point &point) -> void {
+    clear_ix_trail(get_ix(point));
+}
+
+auto snake::FieldStateMgr::clear_ix_trail(const Dim &ix) -> void {
+    type_[ix] = FREE;
+}
+
