@@ -23,6 +23,20 @@ namespace snake {
     using TimePointSysClock = chr::time_point<chr::system_clock>;
     using SysClock = chr::system_clock;
 
+    auto remove_trail(FieldStateMgr &fsm, const Snake &snake, PathFound &path_found) {
+        Point trail = snake.get_head();
+        while (!path_found.empty()) {
+            auto t = path_found.top();
+            if (t == LEFT) --trail.x;
+            else if (t == RIGHT) ++trail.x;
+            else if (t == UP) --trail.y;
+            else ++trail.y;
+            if (path_found.size() != 1)
+                fsm.clear_point_trail(trail);
+            path_found.pop();
+        }
+    }
+
     auto set_fsm_of_arena(FieldStateMgr &fsm) -> void {
         for (Dim i = 0; i < fsm.height(); ++i) {
             fsm.set_point_as_used({0, i}, BLOCK);

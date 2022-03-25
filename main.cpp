@@ -25,24 +25,11 @@ auto main(int argc, char **argv) -> int {
         if (is_key_pressed()) {
             char key = getchar();
             if (key == KEY_ESCAPE) {
-                is_gameover = false;
+                is_gameover = true;
 
             } else if (key == ' ') {
                 is_auto = !is_auto;
-
-                // Remove trail if it exists
-                Point trail = snake.get_head();
-                while (!path_found.empty()) {
-                    auto t = path_found.top();
-                    if (t == LEFT) --trail.x;
-                    else if (t == RIGHT) ++trail.x;
-                    else if (t == UP) --trail.y;
-                    else ++trail.y;
-                    if (path_found.size() != 1)
-                        fsm.clear_point_trail(trail);
-                    path_found.pop();
-                }
-
+                remove_trail(fsm, snake, path_found);
                 if (is_auto) {
                     PathFinder path_finder(area.h, area.w); 
                     path_found = path_finder.find_path_to_egg(fsm, snake);
