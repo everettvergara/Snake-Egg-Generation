@@ -69,19 +69,21 @@ auto main(int argc, char **argv) -> int {
                 snake.increase_length();
                 fsm.get_next_egg_point();
 
-                // if (is_auto) {
-                //     while (!path_found.empty()) 
-                //         path_found.pop();
-
-                //     PathFinder path_finder(area.h, area.w);
-                //     path_found = path_finder.find_path_to_egg(fsm, snake);
-                // }
+                if (is_auto) {
+                    while (!path_found.empty()) 
+                        path_found.pop();
+                }
             }
             snake.add_new_head_to_body();
             fsm.set_point_as_used(snake.get_head(), SNAKE_BODY);
             if (snake.get_body().size() > snake.get_max_body_length()) {
                 fsm.set_point_as_free(snake.get_tail());
                 snake.remove_tail_from_body();
+            }
+
+            if (is_auto && path_found.empty()) {
+                PathFinder path_finder(area.h, area.w); 
+                path_found = path_finder.find_path_to_egg(fsm, snake);
             }
 
         } else {

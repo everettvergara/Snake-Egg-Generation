@@ -95,6 +95,7 @@ namespace snake {
 
             if (c_ix == e_ix) {
 
+                
                 // std::cout << "FOUND";;
                 // exit(0);
 
@@ -110,7 +111,7 @@ namespace snake {
                     else if (path_cells_[st].path_cell_type == LEFT)
                         ++stack_trace.x;
                     else if (path_cells_[st].path_cell_type == UP)
-                        ++stack_trace.x;
+                        ++stack_trace.y;
                     else 
                         --stack_trace.y;
 
