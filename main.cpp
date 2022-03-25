@@ -18,8 +18,8 @@ auto main(int argc, char **argv) -> int {
     set_fsm_of_arena(fsm);
     
     Snake snake({{
-        static_cast<Dim>(area.w / 2),
-        static_cast<Dim>(area.h / 2)}, {
+        DIM(area.w / 2),
+        DIM(area.h / 2)}, {
         1, 0}}, 10);
 
     bool is_gameover = false;

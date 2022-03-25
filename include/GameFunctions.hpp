@@ -55,16 +55,16 @@ namespace snake {
     auto set_fsm_of_arena(FieldStateMgr &fsm) -> void {
         for (Dim i = 0; i < fsm.height(); ++i) {
             fsm.set_point_as_used({0, i}, BLOCK);
-            fsm.set_point_as_used({static_cast<Dim>(fsm.width() - 1), i}, BLOCK);
+            fsm.set_point_as_used({DIM(fsm.width() - 1), i}, BLOCK);
         }
         for (Dim i = 1; i < fsm.width() - 1; ++i) {
             fsm.set_point_as_used({i, 0}, BLOCK);
-            fsm.set_point_as_used({i, static_cast<Dim>(fsm.height() - 1)}, BLOCK);
+            fsm.set_point_as_used({i, DIM(fsm.height() - 1)}, BLOCK);
         }
         for (Dim i = 5; i < fsm.height() - 5; ++i) {
-            fsm.set_point_as_used({static_cast<Dim>(fsm.width() / 2), i}, BLOCK);
-            fsm.set_point_as_used({static_cast<Dim>(fsm.width() / 4), i}, BLOCK);
-            fsm.set_point_as_used({static_cast<Dim>(fsm.width() / 2 + fsm.width() / 4), i}, BLOCK);
+            fsm.set_point_as_used({DIM(fsm.width() / 2), i}, BLOCK);
+            fsm.set_point_as_used({DIM(fsm.width() / 4), i}, BLOCK);
+            fsm.set_point_as_used({DIM(fsm.width() / 2 + fsm.width() / 4), i}, BLOCK);
         }
     }
 

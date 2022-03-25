@@ -20,7 +20,7 @@ auto snake::FieldStateMgr::get_ix(const Point &point) const -> Dim {
 }
 
 auto snake::FieldStateMgr::get_point(const Dim &ix) const -> Point {
-    return {static_cast<Dim>(ix % (area_.w)), static_cast<Dim>(ix / (area_.w))};
+    return {DIM(ix % (area_.w)), DIM(ix / (area_.w))};
 }
 
 auto snake::FieldStateMgr::is_point_used(const Point &point) const -> bool {
