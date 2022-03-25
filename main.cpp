@@ -29,8 +29,7 @@ auto main(int argc, char **argv) -> int {
 
             } else if (key == ' ') {
                 is_auto = !is_auto;
-                // if (is_auto == true) is_auto = false;
-                // else is_auto = true;
+
                 // if (is_auto) {
                 //     // while (!auto_found_path.empty())
                 //     //     auto_found_path.pop();
