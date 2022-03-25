@@ -4,6 +4,7 @@
 #include <memory>
 #include <stack>
 #include <unordered_set>
+#include <set>
 // #include <map>
 
 #include "Dim.hpp"
@@ -31,7 +32,8 @@ namespace snake {
     using CellChar = char;
     using DebugCells = std::unique_ptr<CellChar[]>;
     using PathFound = std::stack<PathCellType>;
-    using ToBeVisited = std::unordered_set<Dim>;
+    using Consolidated_F_IX = uint32_t;
+    using ToBeVisited = std::set<Consolidated_F_IX>;
     using Visited = std::unordered_set<Dim>;
 
     class PathFinder {
@@ -40,29 +42,43 @@ namespace snake {
             N_(N), M_(M), S_(N_ * M_), 
             path_cells_(std::make_unique<PathCell[]>(S_)),
             debug_cells_(std::make_unique<CellChar[]>(S_)) {};
-        
-        auto clear() -> void {
-            for (Dim i = 0; i < S_; ++i) {
-                path_cells_[i].g = ~0;
-                path_cells_[i].h = ~0;
-                path_cells_[i].path_cell_type = FREE_CELL;
-                debug_cells_[i] = ' ';
+
+        auto display_ch() -> void {
+            std::cout << "\n\nPath:\n";
+            for (Dim i = 0; i < N_; ++i) {
+                for (Dim j = 0; j < M_; ++j)
+                    std::cout << debug_cells_[get_ix({j, i})];
+                std::cout << "\n";
             }
-        } 
+        }
+
+        auto display_to_be_visited() -> void {
+            std::cout << "\n\nTo be Visisted:\n";
+            for (auto &tbv : to_be_visited_)
+                std::cout << tbv << ", ix: " << tbv % S_ << "["<< ((tbv % S_) / M_)<< "]["<< ((tbv % S_) % M_)<< "]" << " f: " << tbv / S_ << "\n";  
+        }
 
         auto find_path_to_egg(FieldStateMgr &fsm, const Snake &snake) -> PathFound {
+            
+            clear();
+
             PathFound path_found;
             PointOp egg_location_op = copy_state_and_get_egg(fsm);
             if (!egg_location_op.has_value())
                 return path_found;
-            
-            Dim c_ix = ~0, e_ix = egg_location_op.value().y * M_ + egg_location_op.value().x;
 
+
+            Dim c_ix = ~0, e_ix = egg_location_op.value().y * M_ + egg_location_op.value().x;
+            
             compute_f_neighbor(snake.get_head(), egg_location_op.value());
+
+            int ctr = 0;
             while(to_be_visited_.size() > 0) {
                 auto top_set = to_be_visited_.begin();
                 c_ix = *top_set / S_;
                 Point c{static_cast<Dim>(c_ix % M_), static_cast<Dim>(c_ix / M_)};
+                
+                display_to_be_visited();
                 to_be_visited_.erase(top_set);
                 visited_.insert(c_ix);
 
@@ -70,9 +86,18 @@ namespace snake {
                     break;
                 
                 compute_f_neighbor(c, egg_location_op.value());
+                display_to_be_visited();
+                display_ch();
+                exit(0);
+
+                ctr++;
             }
 
             if (c_ix == e_ix) {
+
+                std::cout << "FOUND";;
+                exit(0);
+
                 Point stack_trace = egg_location_op.value();
                 Dim st = get_ix(stack_trace);
                 path_found.push(path_cells_[st].path_cell_type);
@@ -95,6 +120,12 @@ namespace snake {
                 }
             }
 
+            // std::cout << "here: " << c_ix << " - " << e_ix << " ctr: " << ctr;
+            // display_ch();
+            // exit(0);
+
+ 
+
             return path_found;
         }
 
@@ -104,6 +135,15 @@ namespace snake {
         DebugCells debug_cells_;
         ToBeVisited to_be_visited_;
         Visited visited_;
+
+        auto clear() -> void {
+            for (Dim i = 0; i < S_; ++i) {
+                path_cells_[i].g = ~0;
+                path_cells_[i].h = ~0;
+                path_cells_[i].path_cell_type = FREE_CELL;
+                debug_cells_[i] = ' ';
+            }
+        } 
 
         auto get_ix(const Point &p) const -> Dim {
             return p.y * M_ + p.x;
@@ -131,12 +171,14 @@ namespace snake {
                     path_cells_[np_ix].path_cell_type = path_cell_type;
                     path_cells_[np_ix].h = h;
                     to_be_visited_.insert(path_cells_[np_ix].f() * S_ + np_ix);
+                    debug_cells_[np_ix] = '.';
                 } else if (path_cells_[np_ix].projected_f(path_cells_[p_ix].g + 10) < path_cells_[np_ix].f() && 
                             visited_.find(np_ix) != visited_.end()) {
+                    
+                    to_be_visited_.erase(path_cells_[np_ix].f() * S_ + np_ix);
+                    
                     path_cells_[np_ix].g = path_cells_[p_ix].g + 10;
                     path_cells_[np_ix].path_cell_type = path_cell_type;
-                    auto const it = visited_.find(path_cells_[np_ix].f() * S_ + np_ix); 
-                    to_be_visited_.erase(it);
                     to_be_visited_.insert(path_cells_[np_ix].f() * S_ + np_ix);
                 }
             };
@@ -162,14 +204,17 @@ namespace snake {
                 case FREE:
                 case TRAIL:
                     path_cells_[i].path_cell_type = FREE_CELL;
+                    debug_cells_[i] = ' ';
                     break;
                 case BLOCK:
                 case SNAKE_BODY:
                     path_cells_[i].path_cell_type = BLOCKED_CELL;
+                    debug_cells_[i] = '#';
                     break;
                 case EGG:
                     path_cells_[i].path_cell_type = FREE_CELL;
                     target_egg.emplace(Point({static_cast<Dim>(i % M_), static_cast<Dim>(i / M_)}));
+                    debug_cells_[i] = '@';
                     break;
                 } 
             }

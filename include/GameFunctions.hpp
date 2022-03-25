@@ -15,7 +15,7 @@ using namespace g80;
 
 namespace snake {
 
-    constexpr int FPS = 15;
+    constexpr int FPS = 5;
     constexpr int MSPF = 1000 / FPS;
     constexpr char KEY_ESCAPE = 27;
     
@@ -44,8 +44,8 @@ namespace snake {
 
     auto set_arena(const FieldStateMgr &fsm, const Snake &snake, TextImage &arena, bool is_auto) -> void {
         arena.fill_text(" ");
-        TextImage automatic(" Automatic ", 3, ON);
-        TextImage manual(" Manual Mode: WASD ", 3, ON);
+        TextImage automatic("Automatic", 3, ON);
+        TextImage manual("Manual", 3, ON);
         TextImage block("#", 7, ON);
         TextImage free(" ", 0, ON);
         TextImage egg("@", 1, ON);

@@ -5,7 +5,7 @@ using namespace snake;
 
 auto main(int argc, char **argv) -> int {
 
-    const Area area(130, 40);
+    const Area area(25, 25);
     TextImage arena(area);
     FieldStateMgr fsm(area);
     set_fsm_of_arena(fsm);
@@ -34,8 +34,10 @@ auto main(int argc, char **argv) -> int {
                     while (!path_found.empty()) 
                         path_found.pop();
 
-                    PathFinder path_finder(area.h, area.w);
+                    PathFinder path_finder(area.h, area.w); 
                     path_found = path_finder.find_path_to_egg(fsm, snake);
+
+
                 }
             } else if (!is_auto) {
                 if (key == 'd') snake.move_right();
