@@ -5,6 +5,13 @@ using namespace snake;
 
 auto main(int argc, char **argv) -> int {
 
+    /*
+     * I dont have to say this but 
+     * here's the section where you declare 
+     * and initialize vars.
+     * 
+     */
+
     const Area area(140, 40);
     TextImage arena(area);
     FieldStateMgr fsm(area);
@@ -20,14 +27,30 @@ auto main(int argc, char **argv) -> int {
     PathFound path_found;
 
     do {
+        /*
+         * Start calculating the elapsed 
+         * Frames per second (FPS) 
+         * 
+         */
+
         TimePointSysClock start {SysClock::now()};
         
+        /*
+         * User input to navigate thru the
+         * the game.
+         * 
+         * esc: quit
+         * space: switch between auto and manual mode
+         * w,a,s,d: move snake manually
+         * 
+         */
+
         if (is_key_pressed()) {
             char key = getchar();
             if (key == KEY_ESCAPE) {
                 is_gameover = true;
 
-            } else if (key == ' ') {
+            } else if (key == KEY_SPACE_BAR) {
                 is_auto = !is_auto;
                 remove_trail(fsm, snake, path_found);
                 if (is_auto) {
@@ -43,35 +66,52 @@ auto main(int argc, char **argv) -> int {
             } 
         }
         
-        if (is_auto && path_found.size() > 0) {
-            PathCellType path_cell_type = path_found.top();
-            path_found.pop();
-            if (path_cell_type == RIGHT) snake.move_right();
-            else if (path_cell_type == LEFT) snake.move_left();
-            else if (path_cell_type == UP) snake.move_up();
-            else if (path_cell_type == DOWN) snake.move_down();
-        }
+        /*
+         * If on AUTO MODE: 
+         *
+         * Commands the snake to move to the 
+         * next closest field between the head 
+         * and the egg.
+         *	
+         */
 
-        // The interested viewer should look at this function
-        // get_next_egg_point();
+        if (is_auto && path_found.size() > 0) 
+            auto_move_snake(snake, path_found);
+
+        /*
+         * get_next_egg_point()
+         *
+         * The interested reader should look at this 
+         * function to see how efficiently can the 
+         * generation of the next egg location be
+         * vs. the traditional generation of snake egg.
+         * 
+         */
+
         if (!fsm.has_egg())
             if (!fsm.get_next_egg_point().has_value())
                 break;
 
-        snake.move_head();
+        /*
+         * The main program routine to animate the snake,
+         * perform checks and manage the field states. 
+         * 
+         * The class functions says it all!
+         * 
+         */
 
+        snake.move_head();
         if (fsm.is_point_free(snake.get_head())) {
+
             if (snake.does_head_hits_egg(fsm.get_egg_point())) {
                 snake.increase_length();
                 fsm.get_next_egg_point();
-
-                if (is_auto) {
-                    while (!path_found.empty()) 
-                        path_found.pop();
-                }
             }
+
             snake.add_new_head_to_body();
+
             fsm.set_point_as_used(snake.get_head(), SNAKE_BODY);
+            
             if (snake.get_body().size() > snake.get_max_body_length()) {
                 fsm.set_point_as_free(snake.get_tail());
                 snake.remove_tail_from_body();
@@ -86,8 +126,23 @@ auto main(int argc, char **argv) -> int {
             is_gameover = true;
         }
 
+        /*
+         * Redraws the entire arena and show 
+         * the game objects.
+         * 
+         */
+
         set_arena(fsm, snake, arena, is_auto);
         arena.show();
+
+        /*
+         * Delay until the computed Millisecs per frame 
+         * to comply with the configured Frames per second.
+         * 
+         * Defaults to 15 FPS. Changed this at 
+         * GameFunctions.hpp
+         * 
+         */
 
         delay_until_next_frame(start);
 

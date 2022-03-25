@@ -18,10 +18,25 @@ namespace snake {
     constexpr int FPS = 15;
     constexpr int MSPF = 1000 / FPS;
     constexpr char KEY_ESCAPE = 27;
+    constexpr char KEY_SPACE_BAR = 32;
+
     
     namespace chr = std::chrono;
     using TimePointSysClock = chr::time_point<chr::system_clock>;
     using SysClock = chr::system_clock;
+
+    auto auto_move_snake(Snake &snake, PathFound &path_found) -> void {
+        PathCellType path_cell_type = path_found.top();
+        path_found.pop();
+        if (path_cell_type == RIGHT) 
+            snake.move_right();
+        else if (path_cell_type == LEFT) 
+            snake.move_left();
+        else if (path_cell_type == UP) 
+            snake.move_up();
+        else 
+            snake.move_down();
+    }
 
     auto remove_trail(FieldStateMgr &fsm, const Snake &snake, PathFound &path_found) {
         Point trail = snake.get_head();
@@ -46,14 +61,11 @@ namespace snake {
             fsm.set_point_as_used({i, 0}, BLOCK);
             fsm.set_point_as_used({i, static_cast<Dim>(fsm.height() - 1)}, BLOCK);
         }
-
-        // Add Blockades
         for (Dim i = 5; i < fsm.height() - 5; ++i) {
             fsm.set_point_as_used({static_cast<Dim>(fsm.width() / 2), i}, BLOCK);
             fsm.set_point_as_used({static_cast<Dim>(fsm.width() / 4), i}, BLOCK);
             fsm.set_point_as_used({static_cast<Dim>(fsm.width() / 2 + fsm.width() / 4), i}, BLOCK);
         }
-
     }
 
     auto set_arena(const FieldStateMgr &fsm, const Snake &snake, TextImage &arena, bool is_auto) -> void {
