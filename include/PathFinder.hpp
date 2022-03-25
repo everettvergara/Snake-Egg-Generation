@@ -89,9 +89,12 @@ namespace snake {
                         --stack_trace.y;
 
                     st = get_ix(stack_trace);
+                    if (fsm.get_state_type_ix(st) == FREE)
+                        fsm.set_ix_trail(st);
                     path_found.push(path_cells_[st].path_cell_type);
                 }
             }
+
             return path_found;
         }
 

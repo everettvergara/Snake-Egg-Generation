@@ -17,8 +17,8 @@ auto main(int argc, char **argv) -> int {
 
     bool is_gameover = false;
     bool is_auto = false;
-    //FoundPath auto_found_path;
-    
+    PathFound path_found;
+
     do {
         TimePointSysClock start {SysClock::now()};
         
@@ -30,11 +30,13 @@ auto main(int argc, char **argv) -> int {
             } else if (key == ' ') {
                 is_auto = !is_auto;
 
-                // if (is_auto) {
-                //     // while (!auto_found_path.empty())
-                //     //     auto_found_path.pop();
-                //     // auto_found_path = path_finder(fsm, snake);
-                // }
+                if (is_auto) {
+                    while (!path_found.empty()) 
+                        path_found.pop();
+
+                    PathFinder path_finder(area.h, area.w);
+                    path_found = path_finder.find_path_to_egg(fsm, snake);
+                }
             } else if (!is_auto) {
                 if (key == 'd') snake.move_right();
                 else if (key == 'a') snake.move_left();
@@ -43,16 +45,14 @@ auto main(int argc, char **argv) -> int {
             } 
         }
         
-        // if (is_auto) {
-        //     if (auto_found_path.size() > 0) {
-        //         DIRECTION d = auto_found_path.top();
-        //         auto_found_path.pop();
-        //         if (d == RIGHT) snake.move_right();
-        //         else if (d == LEFT) snake.move_left();
-        //         else if (d == UP) snake.move_up();
-        //         else if (d == DOWN) snake.move_down();
-        //     }
-        // }
+        if (is_auto && path_found.size() > 0) {
+            PathCellType path_cell_type = path_found.top();
+            path_found.pop();
+            if (path_cell_type == RIGHT) snake.move_right();
+            else if (path_cell_type == LEFT) snake.move_left();
+            else if (path_cell_type == UP) snake.move_up();
+            else if (path_cell_type == DOWN) snake.move_down();
+        }
 
         // The interested viewer should look at this function
         // get_next_egg_point();
@@ -67,11 +67,13 @@ auto main(int argc, char **argv) -> int {
                 snake.increase_length();
                 fsm.get_next_egg_point();
 
-                // if (is_auto) {
-                //     while (!auto_found_path.empty())
-                //         auto_found_path.pop();
-                //     auto_found_path = path_finder(fsm, snake);
-                // }
+                if (is_auto) {
+                    while (!path_found.empty()) 
+                        path_found.pop();
+
+                    PathFinder path_finder(area.h, area.w);
+                    path_found = path_finder.find_path_to_egg(fsm, snake);
+                }
             }
             snake.add_new_head_to_body();
             fsm.set_point_as_used(snake.get_head(), SNAKE_BODY);
