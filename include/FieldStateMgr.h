@@ -26,6 +26,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <random>
 #include <cassert>
 
 #include "SnakeMisc.hpp"
@@ -111,6 +112,10 @@ namespace snake {
         Fields state_;
         Fields mapper_;
         FieldStates type_;
+
+        std::random_device seed_;
+        std::default_random_engine RNG_;
+        
     };
 }
 

@@ -1,3 +1,4 @@
+
 #include "FieldStateMgr.h"
 
 snake::FieldStateMgr::FieldStateMgr(Area area) : 
@@ -6,7 +7,8 @@ snake::FieldStateMgr::FieldStateMgr(Area area) :
     egg_(area_()),
     state_(std::make_unique<Dim[]>(area_())),
     mapper_(std::make_unique<Dim[]>(area_())),
-    type_(std::make_unique<StateType[]>(area_())) {
+    type_(std::make_unique<StateType[]>(area_())),
+    RNG_(seed_()) {
     for (Dim i = 0; i < area_(); ++i) {
         state_.get()[i] = i;
         mapper_.get()[i] = i;
@@ -97,7 +99,9 @@ auto snake::FieldStateMgr::get_next_egg_point() -> const PointOp {
 auto snake::FieldStateMgr::get_next_egg_ix() -> const DimOp {
     if (div_ == 0) 
         return {};
-    egg_ = state_[rand() % div_];
+    
+    std::uniform_int_distribution<int32_t> rng_distribution_(0, div_ - 1);
+    egg_ = state_[rng_distribution_(RNG_)];
     type_[egg_] = EGG;
     return egg_;
 } 

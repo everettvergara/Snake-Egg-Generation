@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <random>
 
 #include "GameFunctions.h"
 
@@ -12,10 +13,16 @@ namespace snake {
         Point trail = snake.get_head();
         while (!path_found.empty()) {
             auto t = path_found.top();
-            if (t == LEFT) --trail.x;
-            else if (t == RIGHT) ++trail.x;
-            else if (t == UP) --trail.y;
-            else ++trail.y;
+
+            if (t == LEFT) 
+                --trail.x;
+            else if (t == RIGHT) 
+                ++trail.x;
+            else if (t == UP) 
+                --trail.y;
+            else 
+                ++trail.y;
+
             if (path_found.size() != 1)
                 fsm.clear_point_trail(trail);
             path_found.pop();
@@ -83,8 +90,11 @@ namespace snake {
                 fsm.set_point_as_used({DIM(fsm.width() / 2 + fsm.width() / 4), i}, BLOCK);
             }
         } else {
+            std::random_device seed;
+            std::default_random_engine RNG(seed());
+            std::uniform_int_distribution<int32_t> rng_distribution(0, fsm.height() * fsm.width() - 1);
             for (Dim i = 0; i < fsm.height() * fsm.width() * 5 / 100; ++i) {
-                Dim r = rand() % (fsm.height() * fsm.width());
+                Dim r = rng_distribution(RNG);
                 if (fsm.get_state_type_ix(r) == FREE)
                     fsm.set_ix_as_used(r, BLOCK);
             }
