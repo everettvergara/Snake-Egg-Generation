@@ -1,5 +1,4 @@
 A Better Way to Generate Eggs in Snake
-by: Everett Gaius S. Vergara
 
 ![alt text](https://github.com/everettvergara/SnakeEggGeneration/blob/main/snake.png)
 
@@ -11,10 +10,10 @@ writing an algorithm that deteriorates the performance of generating the snake e
 All programs I've seen are written in a manner similar to Nibbles (A 1990 Classic Snake written in QBasic).
 
 ```
-// Pseudo code
+Pseudo code
 do {
-    r = rand() % n_; // n_ = Max Rows
-    c = rand() % m_; // m_ = Max Cols
+    r = rand() % n_; n_ = Max Rows
+    c = rand() % m_; m_ = Max Cols
 } while(state[r][c] != USED);
 ```
     
@@ -62,16 +61,27 @@ r = egg_ix / m_; where / denotes integer division
 2) and Create a mapper_ to state_[ix] to check whether mapper[i] is already used or not (free) by performing mapper_[state_[i]] >= div_. The reverse means it is free.
 
 ```
-// Visualization of the mapper_[] vector
-ix          0   1   2   3   4   5   6   7   8   9   ...
-value       ?   ?   ?   ?   ?   ?   ?   ?   ?   ?   ...
-            |
-            +--> mapper_[i] points to index where mapper_[i] is located in state_[]
-```
+Visualization of the mapper_[] vector
 
+    mapper_[]
+    ix:  0   1   2   3   4   5   ...
+    val: 3  ... ... ... ... ... ...
+         |
+         +-----------+
+                     |
+    state_[]         v
+    ix:  0   1   2   3   4   5   ...
+    val  ... ... ... 0   ... ... ...
+                           | |
+                           | | div_
+                           v v
+         <----- free ----->| | <--- used --->
+                     
+
+```
 --
 
-With these two methods (2), the space complexity is increased from n_ x m_, to 3 x n_ x m_ but we are able to reduce the time complexity of finding the location of the next egg from O({Used_States}/(n_ x m_}) to O(1) - a great trade-off!
+With these two methods, the space complexity is increased from n_ x m_, to 3 x n_ x m_ but we are able to reduce the time complexity of finding the location of the next egg from O( {Unused_States} / {n_ x m_}) to O(1), a Great trade-off!
 
 I've written a FieldStateMgr Class in C++ to implement the full scope of this algorithm. 
 
