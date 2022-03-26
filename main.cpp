@@ -51,7 +51,6 @@ auto main(int argc, char **argv) -> int {
 
     Area area(140, 40);
     FieldStateMgr fsm(area);
-    set_fsm_of_arena(fsm, (mode_of_play == 1));
     
     /*
      * A Simple Snake class 
@@ -61,9 +60,10 @@ auto main(int argc, char **argv) -> int {
     Snake snake({{
         DIM(area.w / 2),    // Starting X of snake
         DIM(area.h / 2)},   // Starting Y of snake
-        RIGHT_DIR},         // Starting Direction
+        LEFT_DIR},          // Starting Direction
         10                  // Additional length of Snake when egg is eaten
     );
+    set_fsm_of_arena(fsm, snake, (mode_of_play == 1));
 
     /*
      * TextImage: 

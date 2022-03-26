@@ -40,7 +40,7 @@ namespace snake {
     auto get_path_found(FieldStateMgr &fsm, const Snake &snake, PathFound &path_found) -> void;
     auto accept_inputs(FieldStateMgr &fsm, Snake &snake, PathFound &path_found, bool &is_auto) -> bool;
     auto auto_move_snake(Snake &snake, PathFound &path_found) -> void;
-    auto set_fsm_of_arena(FieldStateMgr &fsm, bool is_easy) -> void;
+    auto set_fsm_of_arena(FieldStateMgr &fsm, const Snake &snake, bool is_easy) -> void;
     auto set_arena(const FieldStateMgr &fsm, const Snake &snake, TextImage &arena, bool is_auto) -> void;
     auto delay_until_next_frame(const TimePointSysClock &start) -> void;
 }

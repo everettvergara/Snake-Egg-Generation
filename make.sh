@@ -1,0 +1,1 @@
+/usr/bin/g++ -fdiagnostics-color=always -Wall -std=c++17 "main.cpp" ./src/*.cpp -I "./include" -o "main"

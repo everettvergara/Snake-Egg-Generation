@@ -56,7 +56,7 @@ namespace snake {
             else if (key == 's') 
                 snake.move_down();
         } 
-        
+
         return true;
     }
 
@@ -73,7 +73,7 @@ namespace snake {
             snake.move_down();
     }
 
-    auto set_fsm_of_arena(FieldStateMgr &fsm, bool is_easy) -> void {
+    auto set_fsm_of_arena(FieldStateMgr &fsm, const Snake &snake, bool is_easy) -> void {
         for (Dim i = 0; i < fsm.height(); ++i) {
             fsm.set_point_as_used({0, i}, BLOCK);
             fsm.set_point_as_used({DIM(fsm.width() - 1), i}, BLOCK);
@@ -99,6 +99,17 @@ namespace snake {
                 if (fsm.get_state_type_ix(r) == FREE)
                     fsm.set_ix_as_used(r, BLOCK);
             }
+
+            // Make sure the head doesn't collide immediately on a block with all this randomness
+            for (Dim i = 1; i < fsm.width() - 1; ++i)
+                if (fsm.get_state_type_point({i, snake.get_head().y}) == BLOCK)
+                    fsm.set_point_as_free({i, snake.get_head().y});
+            
+            // Make sure the head doesn't collide immediately on a block with all this randomness
+            for (Dim i = 1; i < fsm.height() - 1; ++i)
+                if (fsm.get_state_type_point({snake.get_head().x, i}) == BLOCK)
+                    fsm.set_point_as_free({snake.get_head().x, i});
+
         }
     }
 
