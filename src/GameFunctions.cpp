@@ -1,32 +1,14 @@
 #include <iostream>
 #include <iomanip>
-#include <chrono>
-#include <thread>
 #include <sstream>
-// #include <stack>
-// #include <vector>
-// #include <tuple>
 
-#include "TextImage.h"
-#include "Snake.h"
-#include "FieldStateMgr.h"
-#include "Misc.hpp"
-#include "PathFinder.hpp"
+#include "GameFunctions.h"
 
 using namespace g80;
 
 namespace snake {
 
-    constexpr int FPS = 15;
-    constexpr int MSPF = 1000 / FPS;
-    constexpr char KEY_ESCAPE = 27;
-    constexpr char KEY_SPACE_BAR = 32;
-    
-    namespace chr = std::chrono;
-    using TimePointSysClock = chr::time_point<chr::system_clock>;
-    using SysClock = chr::system_clock;
-
-    auto remove_trail(FieldStateMgr &fsm, const Snake &snake, PathFound &path_found) {
+    auto remove_trail(FieldStateMgr &fsm, const Snake &snake, PathFound &path_found) -> void {
         Point trail = snake.get_head();
         while (!path_found.empty()) {
             auto t = path_found.top();

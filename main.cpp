@@ -1,4 +1,5 @@
-#include "GameFunctions.hpp"
+#include "Misc.hpp"
+#include "GameFunctions.h"
 
 using namespace g80;
 using namespace snake;
@@ -38,9 +39,13 @@ auto main(int argc, char **argv) -> int {
         return 0;
 
     /*
-     * FieldStateMgr: 
+     * FieldStateMgr:
+     *
      * If you came across my github post, you should be interested 
      * on this class: FieldStateMgr
+     * 
+     * This is where the egg generation happens and determination 
+     * whether a field in the arena is tagged as used or not.
      * 
      */
 
@@ -62,7 +67,8 @@ auto main(int argc, char **argv) -> int {
 
     /*
      * TextImage: 
-     * Library that handles console gfx to generalize
+     * 
+     * My library that handles console gfx to generalize
      * the game routine of rendering to screen 
      * 
      */

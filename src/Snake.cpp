@@ -47,22 +47,22 @@ auto snake::Snake::remove_tail_from_body() -> void {
 
 auto snake::Snake::move_up() -> void {
     if (head_.dir.xn != 0)
-        head_.dir = {0, -1};
+        head_.dir = UP_DIR;
 }
 
 auto snake::Snake::move_down() -> void{
     if (head_.dir.xn != 0)
-        head_.dir = {0, 1};
+        head_.dir = DOWN_DIR;
 }
 
 auto snake::Snake::move_left() -> void {
     if (head_.dir.yn != 0)
-        head_.dir = {-1, 0};
+        head_.dir = LEFT_DIR;
 }
 
 auto snake::Snake::move_right() -> void {
     if (head_.dir.yn != 0)
-        head_.dir = {1, 0};
+        head_.dir = RIGHT_DIR;
 }
 
 auto snake::Snake::get_body() const -> const Body & {

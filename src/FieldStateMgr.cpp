@@ -1,6 +1,5 @@
 #include "FieldStateMgr.h"
 
-
 snake::FieldStateMgr::FieldStateMgr(Area area) : 
     area_(area),
     div_(area_()), 

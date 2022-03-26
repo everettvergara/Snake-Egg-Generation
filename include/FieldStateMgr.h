@@ -100,7 +100,7 @@ namespace snake {
         auto debug() -> void;
         auto show() -> void;
 
-        // INVALIDS
+        // Need to check if free? 
         auto NOT_FREE_POINT() const -> Point;
         auto NOT_FREE_IX() const -> Dim;
 
