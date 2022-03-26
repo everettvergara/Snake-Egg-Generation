@@ -108,15 +108,15 @@ namespace snake {
         std::stringstream ss;
         ss << " Old %Eff: " << std::fixed << std::setprecision(2) << eff_value << " vs. New %Eff: 100.00% "; 
         TextImage efficiency(ss.str(), 1, ON);
-        TextImage automatic(" Auto (esc, ' ') ", 3, ON);
-        TextImage manual(" Manual (esc, ' ', w,a,s,d) ", 3, ON);
-        TextImage block("#", 7, ON);
-        TextImage free(" ", 0, ON);
-        TextImage egg("@", 1, ON);
-        TextImage trail(".", 3, ON);
-        TextImage bug("?", 7, ON);
+        static const TextImage automatic(" Auto (esc, ' ') ", 3, ON);
+        static const TextImage manual(" Manual (esc, ' ', w,a,s,d) ", 3, ON);
+        static const TextImage block("#", 7, ON);
+        static const TextImage free(" ", 0, ON);
+        static const TextImage egg("@", 1, ON);
+        static const TextImage trail(".", 3, ON);
+        static const TextImage bug("?", 7, ON);
         
-        TextImage snake_stripes[3] = {
+        static const TextImage snake_stripes[3] = {
             TextImage("$", 2, ON),
             TextImage("$", 4, ON),
             TextImage("$", 4, ON),
