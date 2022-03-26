@@ -33,9 +33,21 @@ namespace snake {
     using Fields = std::unique_ptr<Dim[]>;
     using DimOp = std::optional<Dim>;
 
-    struct Dir {Dim xn, yn;};
+    struct Dir {
+        Dim xn, yn;
+    };
+    
+    constexpr Dir RIGHT_DIR{1, 0};
+    constexpr Dir LEFT_DIR{-1, 0};
+    constexpr Dir UP_DIR{0, -1};
+    constexpr Dir DOWN_DIR{0, 1};
+
     using PointOp = std::optional<Point>;
-    struct VectorPoint {Point point; Dir dir;};
+    
+    struct VectorPoint {
+        Point point; 
+        Dir dir;
+    };
 }
 
 #endif 

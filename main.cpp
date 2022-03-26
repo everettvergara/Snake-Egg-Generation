@@ -9,7 +9,7 @@ auto main(int argc, char **argv) -> int {
     std::cout << "****************************************************\n";
     std::cout << "* //////////////////////////////////////////////// *\n";
     std::cout << "*                                                  *\n";
-    std::cout << "* A non-ECS Snake Demo of efficient Egg Generation *\n";
+    std::cout << "* A simple Snake Demo of efficient Egg Generation  *\n";
     std::cout << "*                      by Everett Gaius S. Vergara *\n";
     std::cout << "*                                                  *\n";
     std::cout << "* Check the full source code and exaplanation at:  *\n";
@@ -29,8 +29,8 @@ auto main(int argc, char **argv) -> int {
     std::cout << "\n\n";
     std::cout << " Input mode of play:\n";
     std::cout << " (1) Easy\n";
-    std::cout << " (2) Hell\n\n";
-    std::cout << " any other input will Exit: _";
+    std::cout << " (2) Hell!!!\n\n";
+    std::cout << " any other input will Exit: ";
     
     Dim mode_of_play;
     std::cin >> mode_of_play;
@@ -38,24 +38,41 @@ auto main(int argc, char **argv) -> int {
         return 0;
 
     /*
-     * I don't have to say this but 
-     * here's the section where you declare 
-     * and initialize vars.
+     * FieldStateMgr: 
+     * If you came across my github post, you should be interested 
+     * on this class: FieldStateMgr
      * 
      */
 
-    const Area area(140, 40);
-    TextImage arena(area);
+    Area area(140, 40);
     FieldStateMgr fsm(area);
     set_fsm_of_arena(fsm, (mode_of_play == 1));
     
+    /*
+     * A Simple Snake class 
+     * 
+     */
+
     Snake snake({{
-        DIM(area.w / 2),            // Starting X of snake
-        DIM(area.h / 2)},           // Starting Y of snake
-        // todo: make Direction as an alias of Point
-        {1, 0}},                    // Starting Direction (X-inc, Y-inc)
-        10                          // Additional length of Snake when egg is eaten
+        DIM(area.w / 2),    // Starting X of snake
+        DIM(area.h / 2)},   // Starting Y of snake
+        RIGHT_DIR},         // Starting Direction
+        10                  // Additional length of Snake when egg is eaten
     );
+
+    /*
+     * TextImage: 
+     * Library that handles console gfx to generalize
+     * the game routine of rendering to screen 
+     * 
+     */
+
+    TextImage arena(area);
+
+    /*
+     * Misc state vars: 
+     * 
+     */
 
     bool is_auto = false;
     PathFound path_found;
@@ -138,7 +155,7 @@ auto main(int argc, char **argv) -> int {
         if (is_auto && path_found.empty()) 
             get_path_found(fsm, snake, path_found);
 
-        /*
+        /*  
          * Redraws the entire arena and show 
          * the game objects.
          * 
