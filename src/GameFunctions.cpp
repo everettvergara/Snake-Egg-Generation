@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <sstream>
 #include <random>
+#include <thread>
 
 #include "GameFunctions.h"
 
@@ -55,7 +56,7 @@ namespace snake {
             else if (key == 's') 
                 snake.move_down();
         } 
-
+        
         return true;
     }
 
@@ -115,7 +116,6 @@ namespace snake {
         static const TextImage egg("@", 1, ON);
         static const TextImage trail(".", 3, ON);
         static const TextImage bug("?", 7, ON);
-        
         static const TextImage snake_stripes[3] = {
             TextImage("$", 2, ON),
             TextImage("$", 4, ON),

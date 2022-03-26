@@ -18,8 +18,6 @@
  */
 
 #include <chrono>
-#include <thread>
-
 
 #include "TextImage.h"
 #include "Snake.h"

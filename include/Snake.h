@@ -26,7 +26,7 @@
  * 
  * But since this is a demo of Snake Egg 
  * Optimization, I'll leave the optimization to the 
- * reader. I have work and other things to do yah know?
+ * reader. I have work and other things to do, yah know?
  *	
  */
 
