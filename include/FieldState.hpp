@@ -21,7 +21,6 @@
 #define _FIELD_STATE_HPP_
 
 #include <memory>
-
 using namespace g80;
 
 namespace snake {
@@ -35,7 +34,6 @@ namespace snake {
     };
 
     using FieldStates = std::unique_ptr<StateType[]>;
-
 }
 
 #endif

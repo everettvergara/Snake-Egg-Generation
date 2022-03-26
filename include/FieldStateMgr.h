@@ -29,6 +29,7 @@
 #include <random>
 #include <cassert>
 
+
 #include "SnakeMisc.hpp"
 #include "Area.hpp"
 #include "Point.hpp"
@@ -109,8 +110,10 @@ namespace snake {
         Area area_;
         Dim div_;
         Dim egg_;
+        
         Fields state_;
         Fields mapper_;
+
         FieldStates type_;
 
         std::random_device seed_;
