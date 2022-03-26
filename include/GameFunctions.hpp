@@ -45,16 +45,17 @@ namespace snake {
         path_found = path_finder.find_path_to_egg(fsm, snake);
     }
 
-    auto accept_inputs(FieldStateMgr &fsm, Snake &snake, PathFound &path_found, bool &is_auto, bool &is_gameover) -> void {
+    auto accept_inputs(FieldStateMgr &fsm, Snake &snake, PathFound &path_found, bool &is_auto) -> bool {
         char key = getchar();
         if (key == KEY_ESCAPE) {
-            is_gameover = true;
+            return false;
 
         } else if (key == KEY_SPACE_BAR) {
             is_auto = !is_auto;
             remove_trail(fsm, snake, path_found);
             if (is_auto) 
                 get_path_found(fsm, snake, path_found);
+                
         } else if (!is_auto) {
             if (key == 'd') 
                 snake.move_right();
@@ -65,6 +66,8 @@ namespace snake {
             else if (key == 's') 
                 snake.move_down();
         } 
+
+        return true;
     }
 
     auto auto_move_snake(Snake &snake, PathFound &path_found) -> void {

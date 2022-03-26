@@ -52,19 +52,13 @@ auto main(int argc, char **argv) -> int {
     Snake snake({{
         DIM(area.w / 2),            // Starting X of snake
         DIM(area.h / 2)},           // Starting Y of snake
-        {1, 0}},                    // Direction (Xn, Yn)
+        // todo: make Direction as an alias of Point
+        {1, 0}},                    // Starting Direction (X-inc, Y-inc)
         10                          // Additional length of Snake when egg is eaten
     );
 
-    bool is_gameover = false;
     bool is_auto = false;
     PathFound path_found;
-    
-    /*
-     * Speed efficiency of OLD Technique is 
-     * calculated at Unused / Total x 100% 
-     * 
-     */
 
     do {
         /*
@@ -86,7 +80,8 @@ auto main(int argc, char **argv) -> int {
          */
 
         if (is_key_pressed())
-            accept_inputs(fsm, snake, path_found, is_auto, is_gameover);
+            if(!accept_inputs(fsm, snake, path_found, is_auto))
+                break;
         
         /*
          * If on AUTO MODE: 
@@ -163,7 +158,7 @@ auto main(int argc, char **argv) -> int {
 
         delay_until_next_frame(start);
 
-    } while(!is_gameover);
+    } while(true);
 
     std::cout << "Game Over!!!" << std::endl; 
 }
